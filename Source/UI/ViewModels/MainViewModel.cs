@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Pyratron.PyraChat.UI.ViewModels
 {
-    class MainViewModel
+    public class MainViewModel
     {
     }
 }
