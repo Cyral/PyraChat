@@ -41,11 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IRCClient.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="ChannelType.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Messages\UserNoticeMessage.cs" />
     <Compile Include="Messages\IReceivable.cs" />
     <Compile Include="Messages\ISendable.cs" />
     <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\NickMessage.cs" />
+    <Compile Include="Messages\ChannelNoticeMessage.cs" />
+    <Compile Include="Messages\UserMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserRank.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

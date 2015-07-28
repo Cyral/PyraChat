@@ -22,12 +22,13 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        private IRCClient irc;
+        private Client irc;
 
         public MainViewModel()
         { 
-            irc = new IRCClient("frogbox.es", 6667);
-            irc.MessageReceived += message => Text += message + Environment.NewLine;
+            irc = new Client("frogbox.es", 6667, new User("My_Name", "My Real Name", "USFF0000"));
+            //irc.MessageReceived += message => Text += message + Environment.NewLine;
+            irc.Notice += (client, user, notice) => Text += notice + Environment.NewLine;
             irc.Connect();
         }
     }

@@ -23,5 +23,13 @@ namespace Pyratron.PyraChat.IRC
             Name = name;
             Type = ChannelType.FromPrefix(name[0]);
         }
+
+        #region Events
+
+        public delegate void NoticeEventHandler(Channel channel, User user, string notice);
+        public event NoticeEventHandler Notice;
+        internal void OnNotice(User user, string notice) => Notice?.Invoke(this, user, notice);
+
+        #endregion //Events
     }
 }
