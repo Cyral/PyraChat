@@ -1,6 +1,22 @@
-﻿<Application x:Class="UI.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:UI" StartupUri="MainWindow.xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
+﻿<Application x:Class="UI.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:UI"
+             StartupUri="Views/MainView.xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d"
+             xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewModels="clr-namespace:Pyratron.PyraChat.UI.ViewModels">
-  <Application.Resources>
-    <viewModels:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
-  </Application.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Styles/Pyratron.xaml" />
+                <ResourceDictionary Source="Styles/LightHeader.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <viewModels:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

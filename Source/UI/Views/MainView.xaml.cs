@@ -12,17 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Pyratron.PyraChat.UI.ViewModels;
 
 namespace Pyratron.PyraChat.UI.Views
 {
     /// <summary>
     /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainView : UserControl
+    public partial class MainView
     {
         public MainView()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }

@@ -1,0 +1,350 @@
+﻿<!-- Light Header used by the main window. Features darker buttons and text in the header -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                    xmlns:converters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro">
+    <ControlTemplate x:Key="CancelIcon">
+        <Canvas>
+            <Path Fill="#FF2B2B2B"
+                          Width="14.3775"
+                          Height="14"
+                          Canvas.Left="0.311264"
+                          Canvas.Top="0.500005"
+                          Stretch="Fill"
+                          Data="F1 M 111.2,-85.6L 124.2,-85.6L 124.2,-72.6L 111.2,-72.6L 111.2,-85.6 Z M 117.791,-82.4439L 117.791,-80.4506L 112.685,-80.4506L 112.685,-77.8084L 117.791,-77.8084L 117.791,-75.8748L 121.025,-79.1094L 117.791,-82.4439 Z M 121.657,-84.0222L 121.657,-74.0222L 122.657,-74.0222L 122.657,-84.0222L 121.657,-84.0222 Z " />
+        </Canvas>
+    </ControlTemplate>
+
+
+    <Style x:Key="MainWindowStyle" TargetType="controls:MetroWindow">
+        <Setter Property="WindowTitleBrush"
+                Value="{StaticResource GrayBrush10}" />
+        <Setter Property="NonActiveWindowTitleBrush"
+                Value="{StaticResource GrayBrush9}" />
+        <Setter Property="BorderThickness"
+                Value="1" />
+        <Setter Property="BorderBrush"
+                Value="{StaticResource GrayBrush6}" />
+        <Setter Property="TitleForeground"
+                Value="{StaticResource GrayBrush1}" />
+    </Style>
+
+    <Style TargetType="{x:Type controls:WindowButtonCommands}">
+        <Setter Property="Foreground"
+                Value="{StaticResource BlackBrush}" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:WindowButtonCommands">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="PART_Min"
+                                Focusable="False"
+                                Style="{Binding WindowMinButtonStyle, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}"
+                                ToolTip="{Binding Minimize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WindowButtonCommands}}}"
+                                IsEnabled="{Binding IsMinButtonEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{x:Static converters:ResizeModeMinMaxButtonVisibilityConverter.Instance}"
+                                              ConverterParameter="MIN">
+                                    <Binding Path="ShowMinButton"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                    <Binding Path="UseNoneWindowStyle"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                    <Binding Path="ResizeMode"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <Path Data="F1M0,6L0,9 9,9 9,6 0,6z"
+                                  SnapsToDevicePixels="True"
+                                  Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Button>
+
+                        <Button x:Name="PART_Max"
+                                Focusable="False"
+                                Style="{Binding WindowMaxButtonStyle, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}"
+                                ToolTip="{Binding Maximize, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WindowButtonCommands}}}"
+                                IsEnabled="{Binding IsMaxRestoreButtonEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{x:Static converters:ResizeModeMinMaxButtonVisibilityConverter.Instance}"
+                                              ConverterParameter="MAX">
+                                    <Binding Path="ShowMaxRestoreButton"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                    <Binding Path="UseNoneWindowStyle"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                    <Binding Path="ResizeMode"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <!-- normal state -->
+                            <Path x:Name="PART_MaxPath"
+                                  Width="10"
+                                  Height="10"
+                                  Data="F1M0,0L0,9 9,9 9,0 0,0 0,3 8,3 8,8 1,8 1,3z"
+                                  SnapsToDevicePixels="True"
+                                  Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Button>
+
+                        <Button x:Name="PART_Close"
+                                Focusable="False"
+                                RenderOptions.EdgeMode="Aliased"
+                                Style="{Binding WindowCloseButtonStyle, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}"
+                                ToolTip="{Binding Close, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WindowButtonCommands}}}"
+                                IsEnabled="{Binding IsCloseButtonEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}}">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{x:Static converters:ResizeModeMinMaxButtonVisibilityConverter.Instance}"
+                                              ConverterParameter="CLOSE">
+                                    <Binding Path="ShowCloseButton"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                    <Binding Path="UseNoneWindowStyle"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}"
+                                             Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.Visibility>
+                            <Path Data="M 10.009,1.704 L 8.331,0.026 5.03,3.327 1.703,0 0,1.704 3.326,5.031 0.025,8.332 1.703,10.009 5.004,6.708 8.305,10.009 10.009,8.305 6.708,5.005"
+                                  SnapsToDevicePixels="True"
+                                  Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                        </Button>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:MetroWindow}}, Path=WindowState}"
+                                     Value="Maximized">
+                            <Setter TargetName="PART_MaxPath"
+                                    Property="Data"
+                                    Value="F1M0,10L0,3 3,3 3,0 10,0 10,2 4,2 4,3 7,3 7,6 6,6 6,5 1,5 1,10z M1,10L7,10 7,7 10,7 10,2 9,2 9,6 6,6 6,9 1,9z" />
+                            <Setter TargetName="PART_Max"
+                                    Property="ToolTip"
+                                    Value="{Binding Restore, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WindowButtonCommands}}}" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- base button style for min, max and close window buttons -->
+    <Style x:Key="MetroCustomWindowButtonStyle"
+           TargetType="{x:Type Button}"
+           BasedOn="{StaticResource MetroBaseWindowButtonStyle}">
+        <Setter Property="Background"
+                Value="{StaticResource TransparentWhiteBrush}" />
+        <Setter Property="Foreground"
+                Value="{StaticResource BlackBrush}" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Padding"
+                Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          RecognizesAccessKey="True"
+                                          Opacity="0.75" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="contentPresenter"
+                                    Property="Opacity"
+                                    Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="False">
+                            <Setter TargetName="contentPresenter"
+                                    Property="Opacity"
+                                    Value=".5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="{StaticResource SemiTransparentWhiteBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="{StaticResource HighlightBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="#ADADAD" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type controls:WindowCommands}">
+        <Setter Property="Foreground"
+                Value="{StaticResource BlackBrush}" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:WindowCommands">
+                    <ControlTemplate.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Foreground"
+                                        Value="{StaticResource BlackBrush}" />
+                                <Setter Property="Background"
+                                        Value="{StaticResource TransparentWhiteBrush}" />
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Center" />
+                                <Setter Property="VerticalContentAlignment"
+                                        Value="Center" />
+                                <Setter Property="Padding"
+                                        Value="1" />
+                                <Setter Property="Focusable"
+                                        Value="False" />
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                  RecognizesAccessKey="True"
+                                                                  Opacity="0.75"
+                                                                  Margin="9,1,9,1" />
+
+                                                <Rectangle x:Name="border"
+                                                           SnapsToDevicePixels="True"
+                                                           IsHitTestVisible="False"
+                                                           Opacity="0.25"
+                                                           Width="1"
+                                                           Height="15"
+                                                           VerticalAlignment="Stretch"
+                                                           HorizontalAlignment="Right"
+                                                           Fill="{TemplateBinding Foreground}"
+                                                           Margin="8,0,0,0" />
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="contentPresenter"
+                                                            Property="Opacity"
+                                                            Value="1" />
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="False">
+                                                    <Setter TargetName="contentPresenter"
+                                                            Property="Opacity"
+                                                            Value=".5" />
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled"
+                                                         Value="false">
+                                                    <Setter Property="Foreground"
+                                                            Value="#ADADAD" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                            <Style TargetType="{x:Type ToggleButton}">
+                                <!--Modified version of spiritdead's code-->
+                                <Setter Property="Background"
+                                        Value="{StaticResource TransparentWhiteBrush}" />
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Center" />
+                                <Setter Property="VerticalContentAlignment"
+                                        Value="Center" />
+                                <Setter Property="Padding"
+                                        Value="1" />
+                                <Setter Property="Focusable"
+                                        Value="False" />
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <ContentPresenter x:Name="contentPresenter"
+                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                  RecognizesAccessKey="True"
+                                                                  Opacity=".5"
+                                                                  Margin="9,1,9,1" />
+
+                                                <Rectangle x:Name="border"
+                                                           SnapsToDevicePixels="True"
+                                                           IsHitTestVisible="False"
+                                                           Opacity=".2"
+                                                           Width="1"
+                                                           Height="15"
+                                                           VerticalAlignment="Stretch"
+                                                           HorizontalAlignment="Right"
+                                                           Fill="{TemplateBinding Foreground}"
+                                                           Margin="8,0,0,0" />
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver"
+                                                         Value="True">
+                                                    <Setter TargetName="contentPresenter"
+                                                            Property="Opacity"
+                                                            Value="1" />
+                                                </Trigger>
+                                                <Trigger Property="IsChecked"
+                                                         Value="true">
+                                                    <Setter TargetName="contentPresenter"
+                                                            Property="Opacity"
+                                                            Value="1" />
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled"
+                                                         Value="false">
+                                                    <Setter Property="Foreground"
+                                                            Value="#ADADAD" />
+                                                </Trigger>
+
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ResourceDictionary>
+                    </ControlTemplate.Resources>
+
+                    <ItemsControl IsTabStop="False"
+                                  Height="{Binding TitlebarHeight, RelativeSource={RelativeSource AncestorType=controls:MetroWindow}}"
+                                  ItemsSource="{Binding Items, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WindowCommands}}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+</ResourceDictionary>

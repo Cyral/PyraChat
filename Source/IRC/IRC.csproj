@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRCClient.cs" />
+    <Compile Include="Messages\IReceivable.cs" />
+    <Compile Include="Messages\ISendable.cs" />
+    <Compile Include="Messages\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
