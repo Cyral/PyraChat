@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using Microsoft.SqlServer.Server;
 using Pyratron.PyraChat.IRC.Messages;
+using Pyratron.PyraChat.IRC.Messages.Send;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -34,7 +36,7 @@ namespace Pyratron.PyraChat.IRC
         private StreamWriter writer;
 
         /// <summary>
-        /// Creates a new IRC client and connects to the specified host.
+        /// Creates a new IRC client.
         /// </summary>
         /// <param name="host">Hostname.</param>
         /// <param name="port">Port.</param>
@@ -48,9 +50,15 @@ namespace Pyratron.PyraChat.IRC
 
             tcpClient = new TcpClient();
             networkThread = new Thread(ProcessMessages);
+
+            //Register neccessary internal events
+            Ping += (client, message) => SendMessage(new PongMessage(message));
         }
 
-        public void Connect()
+        /// <summary>
+        /// Connects to the server.
+        /// </summary>
+        public void Start()
         {
             tcpClient.Connect(Host, Port);
             netStream = tcpClient.GetStream();
@@ -64,10 +72,14 @@ namespace Pyratron.PyraChat.IRC
 
             networkThread.Start();
 
+            //Send user information
             SendMessage(new UserMessage(User));
             SendMessage(new NickMessage(User));
         }
 
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
         public void SendMessage(ISendable message)
         {
             message.Send(writer, this);
@@ -80,8 +92,11 @@ namespace Pyratron.PyraChat.IRC
                 var line = reader.ReadLine();
                 if (string.IsNullOrEmpty(line)) continue;
 
+                //Parse the message
                 var msg = new Message(this, line);
-                OnMessageReceived($"{msg.Prefix} {msg.Type} {msg.Destination} {string.Join(" ", msg.Parameters)}");
+                //Choose a message type and process the message
+                msg.Process();
+                OnMessageReceived(line);
             }
             OnMessageReceived("Loop exited.");
         }
@@ -92,9 +107,20 @@ namespace Pyratron.PyraChat.IRC
 
         #region Events
 
-        public delegate void NoticeEventHandler(Client client, User user, string notice);
+        public delegate void PingEventHandler(Client client, string message);
+        public delegate void NoticeEventHandler(Client client, User user, string noticeMessage);
+        public delegate void ConnectEventHandler(Client client);
+        public delegate void WelcomeEventHandler(Client client, string welcomeMessage);
+
+        public event PingEventHandler Ping;
         public event NoticeEventHandler Notice;
-        internal void OnNotice(User user, string notice) => Notice?.Invoke(this, user, notice);
+        public event ConnectEventHandler Connect;
+        public event WelcomeEventHandler Welcome;
+
+        internal void OnPing(string message) => Ping?.Invoke(this, message);
+        internal void OnNotice(User user, string noticeMessage) => Notice?.Invoke(this, user, noticeMessage);
+        internal void OnConnect() => Connect?.Invoke(this);
+        internal void OnWelcome(string welcomeMessage) => Welcome?.Invoke(this, welcomeMessage);
 
         #endregion //Events
     }

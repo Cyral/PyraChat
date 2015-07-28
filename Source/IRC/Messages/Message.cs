@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Pyratron.PyraChat.IRC.Messages.Receive;
+using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 
 namespace Pyratron.PyraChat.IRC.Messages
 {
@@ -57,6 +59,8 @@ namespace Pyratron.PyraChat.IRC.Messages
             //Add message types
             processors.Add(ChannelNoticeMessage.CanProcess, typeof (ChannelNoticeMessage));
             processors.Add(UserNoticeMessage.CanProcess, typeof (UserNoticeMessage));
+            processors.Add(WelcomeMessage.CanProcess, typeof(WelcomeMessage));
+            processors.Add(PingMessage.CanProcess, typeof(PingMessage));
         }
 
         public Message(Client client, string message)
@@ -70,14 +74,19 @@ namespace Pyratron.PyraChat.IRC.Messages
             Prefix = match.Groups[1].Value;
             Type = match.Groups[2].Value;
             Parameters = match.Groups[3].Value.Split(' ').Concat(new[] {match.Groups[4].Value}).ToArray();
+        }
 
-            //Find a receivable message type to process this message.
+        /// <summary>
+        /// Finds a message type to handle the message.
+        /// </summary>
+        public void Process()
+        {
             foreach (var processor in processors)
             {
-                if (processor.Key.Invoke(this) && processor.Value.GetInterfaces().Contains(typeof (IReceivable)))
+                if (processor.Key.Invoke(this) && processor.Value.GetInterfaces().Contains(typeof(IReceivable)))
                 {
                     var receivable = Activator.CreateInstance(processor.Value) as IReceivable;
-                    receivable?.Receive(this);
+                    receivable?.Process(this);
                     break;
                 }
             }

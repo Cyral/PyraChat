@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Pyratron.PyraChat.IRC.Messages
+namespace Pyratron.PyraChat.IRC.Messages.Send
 {
     /// <summary>
     /// Nick message.

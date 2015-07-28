@@ -4,6 +4,6 @@ namespace Pyratron.PyraChat.IRC.Messages
 {
     public interface IReceivable
     {
-        void Receive(Message msg);
+        void Process(Message msg);
     }
 }
