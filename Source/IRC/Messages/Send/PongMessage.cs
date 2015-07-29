@@ -17,7 +17,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.Write($"PONG :{Message}");
+            writer.WriteLine($"PONG :{Message}");
         }
     }
 }

@@ -13,7 +13,7 @@
     <StackPanel>
         <TextBox Margin="16" IsReadOnly="True" HorizontalAlignment="Stretch" Height="402" VerticalAlignment="Stretch"
                  VerticalScrollBarVisibility="Auto" Text="{Binding Text}" />
-        <TextBox Margin="16,0,16,16" IsReadOnly="True" VerticalAlignment="Stretch"
+        <TextBox Margin="16,0,16,16" VerticalAlignment="Stretch"
                  VerticalScrollBarVisibility="Auto" Text="{Binding Chat}">
             <TextBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding EnterCommand}"/>

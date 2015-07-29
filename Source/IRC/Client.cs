@@ -107,16 +107,22 @@ namespace Pyratron.PyraChat.IRC
 
         #region Events
 
+        public delegate void ChannelJoinEventHandler(Client client, Channel channel);
+        public delegate void MessageEventHandler(Client client, User user, string message);
         public delegate void PingEventHandler(Client client, string message);
         public delegate void NoticeEventHandler(Client client, User user, string noticeMessage);
         public delegate void ConnectEventHandler(Client client);
         public delegate void WelcomeEventHandler(Client client, string welcomeMessage);
 
+        public event ChannelJoinEventHandler ChannelJoin;
+        public event MessageEventHandler Message;
         public event PingEventHandler Ping;
         public event NoticeEventHandler Notice;
         public event ConnectEventHandler Connect;
         public event WelcomeEventHandler Welcome;
 
+        internal void OnChannelJoin(Channel channel) => ChannelJoin?.Invoke(this, channel);
+        internal void OnMessage(User user, string message) => Message?.Invoke(this, user, message);
         internal void OnPing(string message) => Ping?.Invoke(this, message);
         internal void OnNotice(User user, string noticeMessage) => Notice?.Invoke(this, user, noticeMessage);
         internal void OnConnect() => Connect?.Invoke(this);

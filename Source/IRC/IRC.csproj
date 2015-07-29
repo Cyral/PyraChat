@@ -53,6 +53,7 @@
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\Send\NickMessage.cs" />
     <Compile Include="Messages\Receive\ChannelNoticeMessage.cs" />
+    <Compile Include="Messages\Send\PrivateMessage.cs" />
     <Compile Include="Messages\Send\UserMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
