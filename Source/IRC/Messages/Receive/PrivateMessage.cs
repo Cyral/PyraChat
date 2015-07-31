@@ -24,13 +24,9 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
             Text = msg.Parameters[1];
 
             if (msg.IsChannel)
-            {
-
-            }
+                msg.Channel.OnMessage(this);
             else
-            {
                 msg.Client.OnMessage(this);
-            }
         }
 
         public static bool CanProcess(Message msg)

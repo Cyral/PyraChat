@@ -75,11 +75,10 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// </summary>
         public ReceivableMessage Process()
         {
-            if (ChannelNoticeMessage.CanProcess(this)) return new ChannelNoticeMessage(this);
             if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
             if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);
             if (PingMessage.CanProcess(this)) return new PingMessage(this);
-            if (UserNoticeMessage.CanProcess(this)) return new UserNoticeMessage(this);
+            if (NoticeMessage.CanProcess(this)) return new NoticeMessage(this);
 
             if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
             if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);
@@ -90,6 +89,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (MOTDEndMessage.CanProcess(this)) return new MOTDEndMessage(this);
             if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
             if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
+            if (LUserClientMessage.CanProcess(this)) return new LUserClientMessage(this);
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;

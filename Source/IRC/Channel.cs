@@ -26,9 +26,14 @@ namespace Pyratron.PyraChat.IRC
 
         #region Events
 
-        public delegate void NoticeEventHandler(Messages.Receive.ChannelNoticeMessage message);
+        public delegate void NoticeEventHandler(Messages.Receive.NoticeMessage message);
+        public delegate void MessageEventHandler(Messages.Receive.PrivateMessage message);
+
         public event NoticeEventHandler Notice;
-        internal void OnNotice(Messages.Receive.ChannelNoticeMessage message) => Notice?.Invoke(message);
+        public event MessageEventHandler Message;
+
+        internal void OnNotice(Messages.Receive.NoticeMessage message) => Notice?.Invoke(message);
+        internal void OnMessage(Messages.Receive.PrivateMessage message) => Message?.Invoke(message);
 
         #endregion //Events
     }

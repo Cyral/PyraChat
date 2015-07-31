@@ -45,6 +45,7 @@
     <Compile Include="ChannelType.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Messages\Receive\JoinMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\LUserClientMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDEndMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDStartMessage.cs" />
@@ -58,12 +59,11 @@
     <Compile Include="Messages\Send\JoinMessage.cs" />
     <Compile Include="Messages\Send\PongMessage.cs" />
     <Compile Include="Messages\Receive\PingMessage.cs" />
-    <Compile Include="Messages\Receive\UserNoticeMessage.cs" />
+    <Compile Include="Messages\Receive\NoticeMessage.cs" />
     <Compile Include="Messages\ReceivableMessage.cs" />
     <Compile Include="Messages\SendableMessage.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\Send\NickMessage.cs" />
-    <Compile Include="Messages\Receive\ChannelNoticeMessage.cs" />
     <Compile Include="Messages\Send\PrivateMessage.cs" />
     <Compile Include="Messages\Send\UserMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

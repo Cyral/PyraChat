@@ -115,7 +115,7 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void PingEventHandler(PingMessage message);
 
-        public delegate void NoticeEventHandler(UserNoticeMessage message);
+        public delegate void NoticeEventHandler(NoticeMessage message);
 
         public delegate void ConnectEventHandler();
 
@@ -137,6 +137,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyMOTDEventHandler(MOTDMessage message);
 
+        public delegate void ReplyLUserClientEventHandler(LUserClientMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -156,6 +158,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyMOTDEndEventHandler ReplyMOTDEnd;
         public event ReplyMOTDStartEventHandler ReplyMOTDStart;
         public event ReplyMOTDEventHandler ReplyMOTD;
+        public event ReplyLUserClientEventHandler ReplyLUserClient;
 
         /// <summary>
         /// General output logging message.
@@ -166,7 +169,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
         internal void OnPing(PingMessage message) => Ping?.Invoke(message);
-        internal void OnNotice(UserNoticeMessage message) => Notice?.Invoke(message);
+        internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnConnect() => Connect?.Invoke();
         internal void OnReplyWelcome(WelcomeMessage message) => ReplyWelcome?.Invoke(message);
         internal void OnReplyYourHost(YourHostMessage message) => ReplyYourHost?.Invoke(message);
@@ -177,6 +180,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyMOTDEnd(MOTDEndMessage message) => ReplyMOTDEnd?.Invoke(message);
         internal void OnReplyMOTDStart(MOTDStartMessage message) => ReplyMOTDStart?.Invoke(message);
         internal void OnReplyMOTD(MOTDMessage message) => ReplyMOTD?.Invoke(message);
+        internal void OnReplyLUserClient(LUserClientMessage message) => ReplyLUserClient?.Invoke(message);
 
         #endregion //Events
     }
