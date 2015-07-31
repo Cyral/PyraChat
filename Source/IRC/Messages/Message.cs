@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Text.RegularExpressions;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
@@ -9,10 +10,7 @@ namespace Pyratron.PyraChat.IRC.Messages
 {
     public class Message
     {
-        private static readonly Regex parseRegex = new Regex(@"^(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
-
-        private static readonly Dictionary<Predicate<Message>, Type> processors =
-            new Dictionary<Predicate<Message>, Type>();
+        private static readonly Regex parseRegex = new Regex(@"(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
 
         public Client Client { get; }
 
@@ -56,11 +54,7 @@ namespace Pyratron.PyraChat.IRC.Messages
 
         static Message()
         {
-            //Add message types
-            processors.Add(ChannelNoticeMessage.CanProcess, typeof (ChannelNoticeMessage));
-            processors.Add(UserNoticeMessage.CanProcess, typeof (UserNoticeMessage));
-            processors.Add(WelcomeMessage.CanProcess, typeof(WelcomeMessage));
-            processors.Add(PingMessage.CanProcess, typeof(PingMessage));
+
         }
 
         public Message(Client client, string message)
@@ -79,17 +73,26 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// <summary>
         /// Finds a message type to handle the message.
         /// </summary>
-        public void Process()
+        public ReceivableMessage Process()
         {
-            foreach (var processor in processors)
-            {
-                if (processor.Key.Invoke(this) && processor.Value.GetInterfaces().Contains(typeof(IReceivable)))
-                {
-                    var receivable = Activator.CreateInstance(processor.Value) as IReceivable;
-                    receivable?.Process(this);
-                    break;
-                }
-            }
+            if (ChannelNoticeMessage.CanProcess(this)) return new ChannelNoticeMessage(this);
+            if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
+            if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);
+            if (PingMessage.CanProcess(this)) return new PingMessage(this);
+            if (UserNoticeMessage.CanProcess(this)) return new UserNoticeMessage(this);
+
+            if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
+            if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);
+            if (CreatedMessage.CanProcess(this)) return new CreatedMessage(this);
+            if (MyInfoMessage.CanProcess(this)) return new MyInfoMessage(this);
+            if (SupportMessage.CanProcess(this)) return new SupportMessage(this);
+            if (BounceMessage.CanProcess(this)) return new BounceMessage(this);
+            if (MOTDEndMessage.CanProcess(this)) return new MOTDEndMessage(this);
+            if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
+            if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
+
+            Console.WriteLine("Message handler for \"" + Text + "\" not found.");
+            return null;
         }
     }
 }

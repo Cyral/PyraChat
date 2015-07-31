@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
-using Microsoft.SqlServer.Server;
 using Pyratron.PyraChat.IRC.Messages;
+using Pyratron.PyraChat.IRC.Messages.Receive;
+using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
+using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
+using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -25,10 +27,11 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// The user connected to this network.
         /// </summary>
-        public User User { get; private set; }
+        public User User { get; }
+
+        internal StringBuilder MOTDBuilder { get; set; } = new StringBuilder();
 
         public List<Channel> Channels { get; }
-
         private readonly Thread networkThread;
         private readonly TcpClient tcpClient;
         private NetworkStream netStream;
@@ -52,7 +55,7 @@ namespace Pyratron.PyraChat.IRC
             networkThread = new Thread(ProcessMessages);
 
             //Register neccessary internal events
-            Ping += (client, message) => SendMessage(new PongMessage(message));
+            Ping += message => Send(new PongMessage(message.Extra));
         }
 
         /// <summary>
@@ -73,14 +76,14 @@ namespace Pyratron.PyraChat.IRC
             networkThread.Start();
 
             //Send user information
-            SendMessage(new UserMessage(User));
-            SendMessage(new NickMessage(User));
+            Send(new UserMessage(User));
+            Send(new NickMessage(User));
         }
 
         /// <summary>
         /// Sends the specified message.
         /// </summary>
-        public void SendMessage(ISendable message)
+        public void Send(SendableMessage message)
         {
             message.Send(writer, this);
         }
@@ -96,37 +99,82 @@ namespace Pyratron.PyraChat.IRC
                 var msg = new Message(this, line);
                 //Choose a message type and process the message
                 msg.Process();
-                OnMessageReceived(line);
+                OnIRCMessage(msg);
             }
-            OnMessageReceived("Loop exited.");
         }
-
-        public delegate void MessageReceivedEventHandler(string message);
-        public event MessageReceivedEventHandler MessageReceived;
-        private void OnMessageReceived(string message) => MessageReceived?.Invoke(message);
 
         #region Events
 
-        public delegate void ChannelJoinEventHandler(Client client, Channel channel);
-        public delegate void MessageEventHandler(Client client, User user, string message);
-        public delegate void PingEventHandler(Client client, string message);
-        public delegate void NoticeEventHandler(Client client, User user, string noticeMessage);
-        public delegate void ConnectEventHandler(Client client);
-        public delegate void WelcomeEventHandler(Client client, string welcomeMessage);
+        public delegate void IRCMessageEventHandler(Message message);
+
+        public delegate void ChannelJoinEventHandler(JoinMessage message);
+
+        public delegate void MessageEventHandler(PrivateMessage message);
+
+        public delegate void PingEventHandler(PingMessage message);
+
+        public delegate void NoticeEventHandler(UserNoticeMessage message);
+
+        public delegate void ConnectEventHandler();
+
+        public delegate void ReplyWelcomeEventHandler(WelcomeMessage message);
+
+        public delegate void ReplyYourHostEventHandler(YourHostMessage message);
+
+        public delegate void ReplyCreatedEventHandler(CreatedMessage message);
+
+        public delegate void ReplyMyInfoEventHandler(MyInfoMessage message);
+
+        public delegate void ReplyISupportEventHandler(SupportMessage message);
+
+        public delegate void ReplyBounceEventHandler(BounceMessage message);
+
+        public delegate void ReplyMOTDEndEventHandler(MOTDEndMessage message);
+
+        public delegate void ReplyMOTDStartEventHandler(MOTDStartMessage message);
+
+        public delegate void ReplyMOTDEventHandler(MOTDMessage message);
+
+        /// <summary>
+        /// General output logging message.
+        /// </summary>
+        public event IRCMessageEventHandler IRCMessage;
 
         public event ChannelJoinEventHandler ChannelJoin;
         public event MessageEventHandler Message;
         public event PingEventHandler Ping;
         public event NoticeEventHandler Notice;
         public event ConnectEventHandler Connect;
-        public event WelcomeEventHandler Welcome;
+        public event ReplyWelcomeEventHandler ReplyWelcome;
+        public event ReplyYourHostEventHandler ReplyYourHost;
+        public event ReplyCreatedEventHandler ReplyCreated;
+        public event ReplyMyInfoEventHandler ReplyMyInfo;
+        public event ReplyISupportEventHandler ReplyISupport;
+        public event ReplyBounceEventHandler ReplyBounce;
+        public event ReplyMOTDEndEventHandler ReplyMOTDEnd;
+        public event ReplyMOTDStartEventHandler ReplyMOTDStart;
+        public event ReplyMOTDEventHandler ReplyMOTD;
 
-        internal void OnChannelJoin(Channel channel) => ChannelJoin?.Invoke(this, channel);
-        internal void OnMessage(User user, string message) => Message?.Invoke(this, user, message);
-        internal void OnPing(string message) => Ping?.Invoke(this, message);
-        internal void OnNotice(User user, string noticeMessage) => Notice?.Invoke(this, user, noticeMessage);
-        internal void OnConnect() => Connect?.Invoke(this);
-        internal void OnWelcome(string welcomeMessage) => Welcome?.Invoke(this, welcomeMessage);
+        /// <summary>
+        /// General output logging message.
+        /// </summary>
+        /// <param name="message">IRC message received.</param>
+        internal void OnIRCMessage(Message message) => IRCMessage?.Invoke(message);
+
+        internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
+        internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
+        internal void OnPing(PingMessage message) => Ping?.Invoke(message);
+        internal void OnNotice(UserNoticeMessage message) => Notice?.Invoke(message);
+        internal void OnConnect() => Connect?.Invoke();
+        internal void OnReplyWelcome(WelcomeMessage message) => ReplyWelcome?.Invoke(message);
+        internal void OnReplyYourHost(YourHostMessage message) => ReplyYourHost?.Invoke(message);
+        internal void OnReplyCreated(CreatedMessage message) => ReplyCreated?.Invoke(message);
+        internal void OnReplyMyInfo(MyInfoMessage message) => ReplyMyInfo?.Invoke(message);
+        internal void OnReplyISupport(SupportMessage message) => ReplyISupport?.Invoke(message);
+        internal void OnReplyBounce(BounceMessage message) => ReplyBounce?.Invoke(message);
+        internal void OnReplyMOTDEnd(MOTDEndMessage message) => ReplyMOTDEnd?.Invoke(message);
+        internal void OnReplyMOTDStart(MOTDStartMessage message) => ReplyMOTDStart?.Invoke(message);
+        internal void OnReplyMOTD(MOTDMessage message) => ReplyMOTD?.Invoke(message);
 
         #endregion //Events
     }

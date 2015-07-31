@@ -6,7 +6,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     /// Pong message.
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.7.3" />
-    public class PongMessage : ISendable
+    public class PongMessage : SendableMessage
     {
         public string Message { get; }
 

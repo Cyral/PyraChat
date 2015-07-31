@@ -6,7 +6,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     /// User message.
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.1.3" />
-    public class UserMessage : ISendable
+    public class UserMessage : SendableMessage
     {
         public string Ident { get; }
         public string RealName { get; }

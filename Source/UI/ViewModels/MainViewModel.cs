@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Pyratron.PyraChat.IRC;
+using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
 
 namespace Pyratron.PyraChat.UI.ViewModels
@@ -27,10 +28,14 @@ namespace Pyratron.PyraChat.UI.ViewModels
         {
             EnterCommand = new RelayCommand(OnEnter);
 
-            irc = new Client("frogbox.es", 6667, new User("My_Name", "My Real Name", "USFF0000"));
-            irc.MessageReceived += message => Text += message + Environment.NewLine;
-            irc.Connect += client => irc.SendMessage(new PrivateMessage("#Pyratron", "Testing123"));
-            //irc.Notice += (client, user, notice) => Text += notice + Environment.NewLine;
+            irc = new Client("frogbox.es", 6667, new User("My_Name", "My Real Name", "Tester_T"));
+            irc.IRCMessage += message => Text += message.Text + Environment.NewLine;
+            irc.Connect += () =>
+            {
+                irc.Send(new JoinMessage("#Pyratron"));
+                irc.Send(new PrivateMessage("#Pyratron", "Testing123"));
+            };
+            //irc.ReplyMOTDEnd += delegate(MOTDEndMessage message) { Text += message.MOTD + Environment.NewLine; };
             irc.Start();
         }
 

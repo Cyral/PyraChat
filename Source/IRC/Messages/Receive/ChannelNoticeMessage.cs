@@ -4,12 +4,14 @@
     /// Notice message for channels.
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.3.2" />
-    public class ChannelNoticeMessage : IReceivable
+    public class ChannelNoticeMessage : ReceivableMessage
     {
-        public void Process(Message msg)
+        public string Notice { get; }
+
+        public ChannelNoticeMessage(Message msg) : base(msg)
         {
-            var notice = msg.Parameters[1];
-            msg.Channel.OnNotice(msg.User, notice);
+            Notice = msg.Parameters[1];
+            msg.Channel.OnNotice(this);
         }
 
         public static bool CanProcess(Message msg)

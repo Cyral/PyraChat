@@ -11,7 +11,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     /// Join message.
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.2.1"/>
-    public class JoinMessage : ISendable
+    public class JoinMessage : SendableMessage
     {
         public string Channel { get; }
 

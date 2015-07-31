@@ -2,7 +2,10 @@
 
 namespace Pyratron.PyraChat.IRC.Messages
 {
-    public interface ISendable
+    /// <summary>
+    /// A sendable message.
+    /// </summary>
+    public interface SendableMessage
     {
         void Send(StreamWriter writer, Client client);
     }

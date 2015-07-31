@@ -1,24 +1,24 @@
 ﻿namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
 {
     /// <summary>
-    /// Welcome message. (001)
+    /// RPL_CREATED message. (003)
     /// </summary>
-    public class WelcomeMessage : ReceivableMessage
+    public class CreatedMessage : ReceivableMessage
     {
         /// <summary>
-        /// Welcome text.
+        /// Message text.
+        /// Example: This server was created ___
         /// </summary>
         public string Text => BaseMessage.Parameters[1];
 
-        public WelcomeMessage(Message msg) : base(msg)
+        public CreatedMessage(Message msg) : base(msg)
         {
-            msg.Client.OnConnect();
-            msg.Client.OnReplyWelcome(this);
+            msg.Client.OnReplyCreated(this);
         }
 
         public static bool CanProcess(Message msg)
         {
-            return msg.Type == "001";
+            return msg.Type == "003";
         }
     }
 }

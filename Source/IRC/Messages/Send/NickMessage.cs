@@ -6,7 +6,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     /// Nick message.
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.1.2" />
-    public class NickMessage : ISendable
+    public class NickMessage : SendableMessage
     {
         public string NickName { get; }
 

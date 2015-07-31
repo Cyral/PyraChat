@@ -6,7 +6,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     /// Private message (PRIVMSG).
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.3.1" />
-    public class PrivateMessage : ISendable
+    public class PrivateMessage : SendableMessage
     {
         /// <summary>
         /// Message target. (Channel or user)
