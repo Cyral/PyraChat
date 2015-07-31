@@ -19,10 +19,12 @@ namespace Pyratron.PyraChat.IRC
 
         public char Prefix { get; }
 
-        private static readonly List<UserRank> types = new List<UserRank>();
+        private static List<UserRank> types;
 
         private UserRank(char prefix)
         {
+            if (types == null)
+                types = new List<UserRank>();
             Prefix = prefix;
             types.Add(this);
         }

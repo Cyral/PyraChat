@@ -10,7 +10,7 @@
 
         public JoinMessage(Message msg) : base(msg)
         {
-            Channel = msg.Channel;
+            Channel = new Channel(msg.Client, msg.Parameters[1]);
 
             if (msg.User == msg.Client.User) //If user joined is ourself
                 msg.Client.OnChannelJoin(this);

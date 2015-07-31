@@ -16,10 +16,12 @@ namespace Pyratron.PyraChat.IRC
 
         public char Prefix { get; }
 
-        private static readonly List<ChannelType> types = new List<ChannelType>();
+        private static List<ChannelType> types;
 
         private ChannelType(char prefix)
         {
+            if (types == null)
+                types = new List<ChannelType>();
             Prefix = prefix;
             types.Add(this);
         }

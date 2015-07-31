@@ -35,6 +35,11 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 irc.Send(new JoinMessage("#Pyratron"));
                 irc.Send(new PrivateMessage("#Pyratron", "Testing123"));
             };
+            irc.Message += message =>
+            {
+                if (message.Text == "!test")
+                    irc.Send(new PrivateMessage(message.BaseMessage.Channel.Name, "Received command."));
+            };
             //irc.ReplyMOTDEnd += delegate(MOTDEndMessage message) { Text += message.MOTD + Environment.NewLine; };
             irc.Start();
         }

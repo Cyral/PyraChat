@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using Pyratron.PyraChat.IRC.Messages;
@@ -56,6 +57,7 @@ namespace Pyratron.PyraChat.IRC
 
             //Register neccessary internal events
             Ping += message => Send(new PongMessage(message.Extra));
+            ChannelJoin += message => Channels.Add(message.Channel);
         }
 
         /// <summary>
