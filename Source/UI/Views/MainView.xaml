@@ -11,45 +11,77 @@
                       TitleCaps="False"
                       Width="1024"
                       Height="512"
+                      MinHeight="256"
+                      MinWidth="512"
+                      WindowState="Maximized"
                       d:DataContext="{Binding Main, Source={StaticResource Locator}}"
                       Style="{DynamicResource MainWindowStyle}">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Command="{Binding }"
+                    ToolTip=""
+                    Content="Settings"
+                    Foreground="{StaticResource WhiteBrush}" />
+            <Button Command="{Binding }"
+                    ToolTip=""
+                    Content="View"
+                    Foreground="{StaticResource WhiteBrush}" />
+            <Button Command="{Binding }"
+                    ToolTip=""
+                    Content="Networks"
+                    Foreground="{StaticResource WhiteBrush}" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80*" />
-            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="*" MinWidth="384"/>
+            <ColumnDefinition MinWidth="128" MaxWidth="256" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="16,16,0,16">
-            <TabControl Height="408">
-                <TabItem Header="Log">
-                    <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                             VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Monospace" />
-                </TabItem>
-                <TabItem Header="#Pyratron">
-                    <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                             VerticalScrollBarVisibility="Auto" Text="{Binding ChannelText}" />
-                </TabItem>
-            </TabControl>
-            <TextBox Margin="0,16,0,0" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="0" Margin="16,16,0,16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Consolas" />
+            <TextBox Margin="0,16,0,0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
+                     VerticalScrollBarVisibility="Auto" Grid.Row="1"
                      Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
-        </StackPanel>
-        <ListBox Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch" Margin="16"
+        </Grid>
+        <TreeView Grid.Row="0" Grid.Column="1" Margin="16"
+                  BorderBrush="LightGray" BorderThickness="1"
+                  ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
+            <TreeViewItem Header="Frogbox" IsExpanded="True"
+                          ItemContainerStyle="{StaticResource TreeViewContainerStyleIndent}">
+                <TreeViewItem Header="#Coldstorm" />
+                <TreeViewItem Header="#Pyratron" Foreground="{StaticResource AccentColorBrush}" />
+                <TreeViewItem Header="#Bricklayer" />
+                <TreeViewItem Header="#aemedia" />
+            </TreeViewItem>
+        </TreeView>
+
+        <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch"
+                 Margin="16,0,16,16"
                  BorderBrush="LightGray" BorderThickness="1">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
-                    <Setter Property="Padding" Value="4,4,4,4"/>
-                    <Setter Property="MinHeight" Value="20"></Setter>
+                    <Setter Property="Padding" Value="4,4,4,4" />
+                    <Setter Property="MinHeight" Value="20" />
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock FontSize="12" Padding="0" Margin="0">
+                    <TextBlock Padding="0" Margin="0">
                         <TextBlock x:Name="Rank"
-                             Text="{Binding Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
+                                   Text="{Binding Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
                             <TextBlock.Style>
                                 <Style>
                                     <Style.Triggers>
