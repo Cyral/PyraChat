@@ -45,12 +45,14 @@ namespace Pyratron.PyraChat.IRC.Messages
         public bool IsChannel => Channel != null;
 
         public User User
-            => Client.User; //TODO: Get user from mask
+            => Channel.UserFromMask(Prefix);
 
         /// <summary>
         /// Message parameters.
         /// </summary>
         public string[] Parameters { get; }
+
+        private static readonly char[] separator = {' '};
 
         static Message()
         {
@@ -67,7 +69,7 @@ namespace Pyratron.PyraChat.IRC.Messages
 
             Prefix = match.Groups[1].Value;
             Type = match.Groups[2].Value;
-            Parameters = match.Groups[3].Value.Split(' ').Concat(new[] {match.Groups[4].Value}).ToArray();
+            Parameters = match.Groups[3].Value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Concat(new[] {match.Groups[4].Value}).ToArray();
         }
 
         /// <summary>
@@ -75,6 +77,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// </summary>
         public ReceivableMessage Process()
         {
+            if (NickMessage.CanProcess(this)) return new NickMessage(this);
             if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
             if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);
             if (PingMessage.CanProcess(this)) return new PingMessage(this);

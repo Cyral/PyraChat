@@ -4,20 +4,86 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:System="clr-namespace:System;assembly=mscorlib"
+                      xmlns:irc="clr-namespace:Pyratron.PyraChat.IRC;assembly=IRC"
                       mc:Ignorable="d"
                       Title="PyraChat IRC"
                       TitleCaps="False"
                       Width="1024"
                       Height="512"
+                      d:DataContext="{Binding Main, Source={StaticResource Locator}}"
                       Style="{DynamicResource MainWindowStyle}">
-    <StackPanel>
-        <TextBox Margin="16" IsReadOnly="True" HorizontalAlignment="Stretch" Height="402" VerticalAlignment="Stretch"
-                 VerticalScrollBarVisibility="Auto" Text="{Binding Text}" />
-        <TextBox Margin="16,0,16,16" VerticalAlignment="Stretch"
-                 VerticalScrollBarVisibility="Auto" Text="{Binding Chat}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding EnterCommand}"/>
-            </TextBox.InputBindings>
-        </TextBox>
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*" />
+            <ColumnDefinition Width="20*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="16,16,0,16">
+            <TabControl Height="408">
+                <TabItem Header="Log">
+                    <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                             VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Monospace" />
+                </TabItem>
+                <TabItem Header="#Pyratron">
+                    <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                             VerticalScrollBarVisibility="Auto" Text="{Binding ChannelText}" />
+                </TabItem>
+            </TabControl>
+            <TextBox Margin="0,16,0,0" VerticalAlignment="Stretch"
+                     VerticalScrollBarVisibility="Auto"
+                     Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+        </StackPanel>
+        <ListBox Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch" Margin="16"
+                 BorderBrush="LightGray" BorderThickness="1">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
+                    <Setter Property="Padding" Value="4,4,4,4"/>
+                    <Setter Property="MinHeight" Value="20"></Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontSize="12" Padding="0" Margin="0">
+                        <TextBlock x:Name="Rank"
+                             Text="{Binding Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
+                            <TextBlock.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.None}">
+                                            <Setter Property="TextBlock.Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock><Run Text="{Binding Nick, Mode=OneWay}" />
+                        <TextBlock.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Owner}">
+                                        <Setter Property="TextBlock.Foreground" Value="#F80000" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Admin}">
+                                        <Setter Property="TextBlock.Foreground" Value="#FC7100" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Op}">
+                                        <Setter Property="TextBlock.Foreground" Value="#F8A600" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.HalfOp}">
+                                        <Setter Property="TextBlock.Foreground" Value="#0AD700" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Voice}">
+                                        <Setter Property="TextBlock.Foreground" Value="#0098E7" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </controls:MetroWindow>

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -36,5 +39,28 @@ namespace Pyratron.PyraChat.IRC
         internal void OnMessage(Messages.Receive.PrivateMessage message) => Message?.Invoke(message);
 
         #endregion //Events
+
+        /// <summary>
+        /// Returns the user whose nickname is equal to the value specified.
+        /// </summary>
+        public User UserFromNick(string nick)
+        {
+            return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Returns the user that best matches the mask provided.
+        /// If any fields are blank in the user, they will be filled in with data from the mask.
+        /// </summary>
+        public User UserFromMask(string mask)
+        {
+            var match = User.MaskRegex.Match(mask);
+            if (!match.Success) return null;
+
+            var user = UserFromNick(match.Groups[1].Value);
+            user.Ident = match.Groups[2].Value;
+            user.Host = match.Groups[3].Value;
+            return user;
+        }
     }
 }

@@ -18,15 +18,17 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// Ident (username).
         /// </summary>
-        public string Ident { get; private set; }
-        public string Host { get; private set; }
+        public string Ident { get; internal set; }
+        public string Host { get; internal set; }
         public string Mode { get; private set; }
+        
+        public UserRank Rank { get; set; } = UserRank.None;
 
-        private static readonly Regex maskRegex = new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
+        internal static Regex MaskRegex { get; } =  new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
 
         public User(string mask)
         {
-            var match = maskRegex.Match(mask);
+            var match = MaskRegex.Match(mask);
             if (!match.Success) return;
             Nick = match.Groups[1].Value;
             Ident = match.Groups[2].Value;

@@ -57,7 +57,6 @@ namespace Pyratron.PyraChat.IRC
 
             //Register neccessary internal events
             Ping += message => Send(new PongMessage(message.Extra));
-            ChannelJoin += message => Channels.Add(message.Channel);
         }
 
         /// <summary>
@@ -78,8 +77,8 @@ namespace Pyratron.PyraChat.IRC
             networkThread.Start();
 
             //Send user information
-            Send(new UserMessage(User));
-            Send(new NickMessage(User));
+            Send(new Messages.Send.UserMessage(User));
+            Send(new Messages.Send.NickMessage(User));
         }
 
         /// <summary>
@@ -99,9 +98,9 @@ namespace Pyratron.PyraChat.IRC
 
                 //Parse the message
                 var msg = new Message(this, line);
-                //Choose a message type and process the message
-                msg.Process();
-                OnIRCMessage(msg);
+                    //Choose a message type and process the message
+                    msg.Process();
+                    OnIRCMessage(msg);
             }
         }
 

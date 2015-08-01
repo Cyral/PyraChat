@@ -12,6 +12,8 @@
   See http://www.galasoft.ch/mvvm
 */
 
+using System.Windows.Navigation;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 
@@ -30,18 +32,16 @@ namespace Pyratron.PyraChat.UI.ViewModels
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
-            SimpleIoc.Default.Register<MainViewModel>();
+            if (ViewModelBase.IsInDesignModeStatic)
+            {
+                // Create design time view services and models
+                SimpleIoc.Default.Register((() => new MainViewModel(true)));
+            }
+            else
+            {
+                // Create run time view services and models
+                SimpleIoc.Default.Register((() => new MainViewModel(false)));
+            }
         }
 
         public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();

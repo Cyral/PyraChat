@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -11,22 +8,25 @@ namespace Pyratron.PyraChat.IRC
     /// </summary>
     public sealed class UserRank
     {
-        public static readonly UserRank None = new UserRank('\0');
+        public static readonly UserRank None = new UserRank();
         public static readonly UserRank Voice = new UserRank('+');
         public static readonly UserRank HalfOp = new UserRank('%');
         public static readonly UserRank Op = new UserRank('@');
-        public static readonly UserRank Creator = new UserRank('@');
-
+        public static readonly UserRank Admin = new UserRank('&');
+        public static readonly UserRank Owner = new UserRank('~');
+        private static List<UserRank> types;
         public char Prefix { get; }
 
-        private static List<UserRank> types;
-
-        private UserRank(char prefix)
+        private UserRank()
         {
             if (types == null)
                 types = new List<UserRank>();
-            Prefix = prefix;
             types.Add(this);
+        }
+
+        private UserRank(char prefix)
+        {
+            Prefix = prefix;
         }
 
         public override string ToString() => Prefix.ToString();

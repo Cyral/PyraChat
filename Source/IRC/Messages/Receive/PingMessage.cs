@@ -13,7 +13,7 @@
 
         public PingMessage(Message msg) : base(msg)
         {
-            Extra = msg.Parameters[1];
+            Extra = msg.Parameters[0];
             msg.Client.OnPing(this);
         }
 
