@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Pyratron.PyraChat.IRC.Messages.Receive;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -13,11 +13,8 @@ namespace Pyratron.PyraChat.IRC
         public string Name { get; private set; }
 
         public string Mode { get; private set; }
-
         public string Topic { get; private set; }
-
         public ChannelType Type { get; }
-
         public List<User> Users { get; }
 
         public Channel(Client client, string name)
@@ -27,24 +24,24 @@ namespace Pyratron.PyraChat.IRC
             Type = ChannelType.FromPrefix(name[0]);
         }
 
-        #region Events
-
-        public delegate void NoticeEventHandler(Messages.Receive.NoticeMessage message);
-        public delegate void MessageEventHandler(Messages.Receive.PrivateMessage message);
-
-        public event NoticeEventHandler Notice;
-        public event MessageEventHandler Message;
-
-        internal void OnNotice(Messages.Receive.NoticeMessage message) => Notice?.Invoke(message);
-        internal void OnMessage(Messages.Receive.PrivateMessage message) => Message?.Invoke(message);
-
-        #endregion //Events
+        /// <summary>
+        /// Adds a user to the channel and fires the UserAdd event.
+        /// </summary>
+        public void AddUser(User user)
+        {
+            Users.Add(user);
+            OnUserAdd(user);
+        }
 
         /// <summary>
         /// Returns the user whose nickname is equal to the value specified.
         /// </summary>
         public User UserFromNick(string nick)
         {
+            //Remove rank from nick
+            var rank = UserRank.FromPrefix(nick[0]);
+            if (rank != UserRank.None)
+                nick = nick.Substring(1);
             return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -62,5 +59,24 @@ namespace Pyratron.PyraChat.IRC
             user.Host = match.Groups[3].Value;
             return user;
         }
+
+        #region Events
+
+        public delegate void NoticeEventHandler(NoticeMessage message);
+        public delegate void MessageEventHandler(PrivateMessage message);
+        public delegate void UserJoinEventHandler(JoinMessage message);
+        public delegate void UserAddEventHandler(User user);
+
+        public event NoticeEventHandler Notice;
+        public event MessageEventHandler Message;
+        public event UserJoinEventHandler UserJoin;
+        public event UserAddEventHandler UserAdd;
+
+        internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
+        internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
+        internal void OnUserJoin(JoinMessage message) => UserJoin?.Invoke(message);
+        internal void OnUserAdd(User user) => UserAdd?.Invoke(user);
+
+        #endregion //Events
     }
 }

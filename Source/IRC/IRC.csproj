@@ -45,6 +45,7 @@
     <Compile Include="ChannelType.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Messages\Receive\JoinMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\NamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\LUserClientMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDMessage.cs" />

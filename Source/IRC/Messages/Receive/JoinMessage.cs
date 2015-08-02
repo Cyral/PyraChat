@@ -4,12 +4,14 @@ using System.Linq;
 namespace Pyratron.PyraChat.IRC.Messages.Receive
 {
     /// <summary>
-    /// Join message.
+    /// Join message. (JOIN)
     /// </summary>
     /// <see cref="http://tools.ietf.org/html/rfc2812#section-3.2.1"/>
     public class JoinMessage : ReceivableMessage
     {
         public Channel Channel { get; }
+
+        public User User => BaseMessage.User;
 
         public JoinMessage(Message msg) : base(msg)
         {
@@ -18,11 +20,14 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
             {
                 //Add initial channel and user
                 msg.Client.Channels.Add(Channel);
-                Channel.Users.Add(msg.Client.User);
+                Channel.AddUser(msg.Client.User);
             }
 
             if (msg.User == msg.Client.User) //If user joined is ourself
+            {
+                msg.Channel.OnUserJoin(this);
                 msg.Client.OnChannelJoin(this);
+            }
             else
             {
                 //TODO: Request info of user (WHO)

@@ -93,6 +93,8 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
             if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
             if (LUserClientMessage.CanProcess(this)) return new LUserClientMessage(this);
+            if (NamesMessage.CanProcess(this)) return new NamesMessage(this);
+            if (EndOfNamesMessage.CanProcess(this)) return new EndOfNamesMessage(this);
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;

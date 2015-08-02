@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -104,11 +106,14 @@ namespace Pyratron.PyraChat.IRC
             }
         }
 
+        public Channel ChannelFromName(string name)
+        {
+            return Channels.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
         #region Events
 
         public delegate void IRCMessageEventHandler(Message message);
-
-        public delegate void ChannelJoinEventHandler(JoinMessage message);
 
         public delegate void MessageEventHandler(PrivateMessage message);
 
@@ -137,13 +142,16 @@ namespace Pyratron.PyraChat.IRC
         public delegate void ReplyMOTDEventHandler(MOTDMessage message);
 
         public delegate void ReplyLUserClientEventHandler(LUserClientMessage message);
+        public delegate void ReplyNamesEventHandler(NamesMessage message);
+        public delegate void ReplyEndOfNamesEventHandler(EndOfNamesMessage message);
+
+        public delegate void ChannelJoinEventHandler(JoinMessage message);
 
         /// <summary>
         /// General output logging message.
         /// </summary>
         public event IRCMessageEventHandler IRCMessage;
 
-        public event ChannelJoinEventHandler ChannelJoin;
         public event MessageEventHandler Message;
         public event PingEventHandler Ping;
         public event NoticeEventHandler Notice;
@@ -158,6 +166,9 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyMOTDStartEventHandler ReplyMOTDStart;
         public event ReplyMOTDEventHandler ReplyMOTD;
         public event ReplyLUserClientEventHandler ReplyLUserClient;
+        public event ReplyNamesEventHandler ReplyNames;
+        public event ReplyEndOfNamesEventHandler ReplyEndOfNames;
+        public event ChannelJoinEventHandler ChannelJoin;
 
         /// <summary>
         /// General output logging message.
@@ -165,7 +176,6 @@ namespace Pyratron.PyraChat.IRC
         /// <param name="message">IRC message received.</param>
         internal void OnIRCMessage(Message message) => IRCMessage?.Invoke(message);
 
-        internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
         internal void OnPing(PingMessage message) => Ping?.Invoke(message);
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
@@ -180,6 +190,9 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyMOTDStart(MOTDStartMessage message) => ReplyMOTDStart?.Invoke(message);
         internal void OnReplyMOTD(MOTDMessage message) => ReplyMOTD?.Invoke(message);
         internal void OnReplyLUserClient(LUserClientMessage message) => ReplyLUserClient?.Invoke(message);
+        internal void OnReplyNames(NamesMessage message) => ReplyNames?.Invoke(message);
+        internal void OnReplyEndOfNames(EndOfNamesMessage message) => ReplyEndOfNames?.Invoke(message);
+        internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
 
         #endregion //Events
     }

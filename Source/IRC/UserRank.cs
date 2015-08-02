@@ -8,25 +8,22 @@ namespace Pyratron.PyraChat.IRC
     /// </summary>
     public sealed class UserRank
     {
-        public static readonly UserRank None = new UserRank();
+        public static readonly UserRank None = new UserRank('\0');
         public static readonly UserRank Voice = new UserRank('+');
         public static readonly UserRank HalfOp = new UserRank('%');
         public static readonly UserRank Op = new UserRank('@');
         public static readonly UserRank Admin = new UserRank('&');
         public static readonly UserRank Owner = new UserRank('~');
         private static List<UserRank> types;
-        public char Prefix { get; }
 
-        private UserRank()
-        {
-            if (types == null)
-                types = new List<UserRank>();
-            types.Add(this);
-        }
+        public char Prefix { get; }
 
         private UserRank(char prefix)
         {
+            if (types == null)
+                types = new List<UserRank>();
             Prefix = prefix;
+            types.Add(this);
         }
 
         public override string ToString() => Prefix.ToString();

@@ -43,9 +43,10 @@ namespace Pyratron.PyraChat.IRC
             Host = hostname;
         }
 
-        public User(Client client, string nick)
+        public User(string nick, UserRank rank)
         {
             Nick = nick;
+            Rank = rank;
         }
     }
 }
