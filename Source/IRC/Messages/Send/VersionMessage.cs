@@ -15,7 +15,6 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public VersionMessage()
         {
-            
         }
 
         public VersionMessage(string target)
@@ -25,7 +24,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.WriteLine($"Version {Target ?? string.Empty}".Trim());
+            writer.WriteLine(string.IsNullOrWhiteSpace(Target) ? "VERSION" : $"VERSION {Target}");
         }
     }
 }

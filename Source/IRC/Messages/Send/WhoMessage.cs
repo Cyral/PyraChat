@@ -31,9 +31,11 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
         public void Send(StreamWriter writer, Client client)
         {
             if (OnlyOperators)
-                writer.WriteLine($"WHO {Mask} o".Trim());
+                writer.WriteLine($"WHO {Mask} o");
+            else if (!string.IsNullOrWhiteSpace(Mask))
+                writer.WriteLine($"WHO {Mask}");
             else
-                writer.WriteLine($"WHO {Mask ?? string.Empty}".Trim());
+                writer.WriteLineAsync("WHO");
         }
     }
 }

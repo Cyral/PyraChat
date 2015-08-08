@@ -25,7 +25,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.WriteLine($"TIME {Target ?? string.Empty}".Trim());
+            writer.WriteLine(string.IsNullOrWhiteSpace(Target) ? "TIME" : $"TIME {Target}");
         }
     }
 }

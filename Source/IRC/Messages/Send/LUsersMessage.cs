@@ -17,10 +17,9 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public LUsersMessage()
         {
-            
         }
 
-        public LUsersMessage(string mask, string target ="")
+        public LUsersMessage(string mask, string target = "")
         {
             Mask = mask;
             Target = target;
@@ -28,7 +27,13 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.WriteLine($"LUSERS {Mask ?? string.Empty} {Target ?? string.Empty}".Trim());
+            if (!string.IsNullOrWhiteSpace(Target))
+                writer.WriteLine($"LUSERS {Mask} {Target}");
+            else if (!string.IsNullOrWhiteSpace(Mask))
+
+                writer.WriteLine($"LUSERS {Mask}");
+            else
+                writer.WriteLine("LUSERS");
         }
     }
 }
