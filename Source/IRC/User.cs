@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -27,10 +28,13 @@ namespace Pyratron.PyraChat.IRC
         public UserRank Rank => ranks.Min();
         private List<UserRank> ranks = new List<UserRank>(); 
 
-        public bool IsAway => Modes.Contains('a');
+        public bool IsAway => Modes.Contains('a') || isAway;
         public bool IsInvisible => Modes.Contains('i');
         public bool IsRestricted => Modes.Contains('r');
         public bool IsOperator => Modes.Contains('o');
+        public string AwayMessage { get; private set; }
+
+        private bool isAway;
 
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
@@ -97,6 +101,13 @@ namespace Pyratron.PyraChat.IRC
             // Invoke events
             if (mode.Equals('a'))
                 client.OnAwayChange(this, false);
+        }
+
+        internal void SetIsAway(Client client, bool away, string reason ="")
+        {
+            AwayMessage = away ? reason : string.Empty;
+            isAway = away;
+            client.OnAwayChange(this, away);
         }
     }
 }

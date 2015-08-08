@@ -68,7 +68,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 irc.IRCMessage += message => LogText += message.Text + Environment.NewLine;
                 irc.Connect += () =>
                 {
-                    irc.Send(new JoinMessage("#pyrachat"));
+                    irc.Send(new JoinMessage("#pyratron"));
                     //irc.Send(new PrivateMessage("#pyrachat", "Testing123"));
                 };
                 irc.Nick += message =>
@@ -76,6 +76,10 @@ namespace Pyratron.PyraChat.UI.ViewModels
                     SortUsers();
                 };
                 irc.RankChange += (user, rank) =>
+                {
+                    SortUsers();
+                };
+                irc.AwayChange += (user, away) =>
                 {
                     SortUsers();
                 };

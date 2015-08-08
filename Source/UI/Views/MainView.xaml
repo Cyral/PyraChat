@@ -35,7 +35,7 @@
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="384"/>
+            <ColumnDefinition Width="*" MinWidth="384" />
             <ColumnDefinition MinWidth="128" MaxWidth="256" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -48,7 +48,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                      VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Consolas" />
+                     VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Consolas" />
             <TextBox Margin="0,16,0,0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
                      VerticalScrollBarVisibility="Auto" Grid.Row="1"
                      Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
@@ -93,6 +93,18 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock><Run Text="{Binding Nick, Mode=OneWay}" />
+                        <TextBlock Text="{Binding AwayMessage, Mode=OneWay, StringFormat={}({0})}" Foreground="Gray" FontStyle="Italic">
+                            <TextBlock.Style>
+                                <Style>
+                                    <Setter Property="TextBlock.Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAway}" Value="False">
+                                            <Setter Property="TextBlock.Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBlock.Style>
                             <Style>
                                 <Style.Triggers>

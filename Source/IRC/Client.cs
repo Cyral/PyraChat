@@ -205,6 +205,12 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ErrorEventHandler(ErrorMessage message);
 
+        public delegate void ReplyAwayEventHandler(AwayMessage message);
+
+        public delegate void ReplyUnAwayEventHandler(UnAwayMessage message);
+
+        public delegate void ReplyNowAwayEventHandler(NowAwayMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -250,6 +256,9 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyListEndEventHandler ReplyListEnd;
         public event ReplyUModeIsEventHandler ReplyUModeIs;
         public event ReplyYoureOperEventHandler ReplyYoureOper;
+        public event ReplyAwayEventHandler ReplyAway;
+        public event ReplyUnAwayEventHandler ReplyUnAway;
+        public event ReplyNowAwayEventHandler ReplyNowAway;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -286,6 +295,9 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyUModeIs(UModeIsMessage message) => ReplyUModeIs?.Invoke(message);
         internal void OnReplyYoureOper(YoureOperMessage message) => ReplyYoureOper?.Invoke(message);
         internal void OnError(ErrorMessage message) => Error?.Invoke(message);
+        internal void OnReplyAway(AwayMessage message) => ReplyAway?.Invoke(message);
+        internal void OnReplyUnAway(UnAwayMessage message) => ReplyUnAway?.Invoke(message);
+        internal void OnReplyNowAway(NowAwayMessage message) => ReplyNowAway?.Invoke(message);
 
         #endregion //Events
     }

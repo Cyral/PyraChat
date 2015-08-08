@@ -121,6 +121,9 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (ListMessage.CanProcess(this)) return new ListMessage(this);
             if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
             if (YoureOperMessage.CanProcess(this)) return new YoureOperMessage(this);
+            if (AwayMessage.CanProcess(this)) return new AwayMessage(this);
+            if (UnAwayMessage.CanProcess(this)) return new UnAwayMessage(this);
+            if (NowAwayMessage.CanProcess(this)) return new NowAwayMessage(this);
 
             // Catch all for unhandled error messages.
             if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);

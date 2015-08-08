@@ -49,6 +49,7 @@
     <Compile Include="Messages\Receive\InviteMessage.cs" />
     <Compile Include="Messages\Receive\JoinMessage.cs" />
     <Compile Include="Messages\Receive\KickMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\AwayMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ErrorMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListEndMessage.cs" />
@@ -61,9 +62,11 @@
     <Compile Include="Messages\Receive\Numerics\CreatedMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MyInfoMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\BounceMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\NowAwayMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\TopicMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\TopicWhoTimeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\UModeIsMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\UnAwayMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WelcomeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
