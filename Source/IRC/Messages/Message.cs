@@ -81,6 +81,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// </summary>
         public ReceivableMessage Process()
         {
+            // Named messages.
             if (NickMessage.CanProcess(this)) return new NickMessage(this);
             if (QuitMessage.CanProcess(this)) return new QuitMessage(this);
             if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
@@ -91,7 +92,9 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (UserModeMessage.CanProcess(this)) return new UserModeMessage(this);
             if (ChannelModeMessage.CanProcess(this)) return new ChannelModeMessage(this);
             if (KickMessage.CanProcess(this)) return new KickMessage(this);
+            if (InviteMessage.CanProcess(this)) return new InviteMessage(this);
 
+            // Numerics.
             if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
             if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);
             if (CreatedMessage.CanProcess(this)) return new CreatedMessage(this);

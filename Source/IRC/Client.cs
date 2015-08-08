@@ -9,6 +9,7 @@ using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
+using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
@@ -194,6 +195,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void RankChangeEventHandler(User user, UserRank rank);
 
+        public delegate void InviteEventHandler(InviteMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -221,6 +224,7 @@ namespace Pyratron.PyraChat.IRC
         public event UserModeEventHandler UserMode;
         public event AwayChangeEventHandler AwayChange;
         public event RankChangeEventHandler RankChange;
+        public event InviteEventHandler Invite;
 
         /// <summary>
         /// General output logging message.
@@ -250,6 +254,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnUserMode(UserModeMessage message) => UserMode?.Invoke(message);
         internal void OnAwayChange(User user, bool away) => AwayChange?.Invoke(user, away);
         internal void OnRankChange(User user, UserRank rank) => RankChange?.Invoke(user, rank);
+        internal void OnInvite(InviteMessage message) => Invite?.Invoke(message);
 
         #endregion //Events
     }
