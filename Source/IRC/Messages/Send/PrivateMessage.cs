@@ -24,6 +24,18 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
             Message = message;
         }
 
+        public PrivateMessage(User user, string message)
+        {
+            Target = user.Nick;
+            Message = message;
+        }
+
+        public PrivateMessage(Channel channel, string message)
+        {
+            Target = channel.Name;
+            Message = message;
+        }
+
         public void Send(StreamWriter writer, Client client)
         {
             writer.WriteLine($"PRIVMSG {Target} :{Message}");

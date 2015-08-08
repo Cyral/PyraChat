@@ -209,6 +209,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyTimeEventHandler(TimeMessage message);
 
+        public delegate void ReplyWhoEventHandler(WhoMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -259,6 +261,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyNowAwayEventHandler ReplyNowAway;
         public event ReplyVersionEventHandler ReplyVersion;
         public event ReplyTimeEventHandler ReplyTime;
+        public event ReplyWhoEventHandler ReplyWho;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -310,6 +313,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyNowAway(NowAwayMessage message) => ReplyNowAway?.Invoke(message);
         internal void OnReplyVersion(VersionMessage message) => ReplyVersion?.Invoke(message);
         internal void OnReplyTime(TimeMessage message) => ReplyTime?.Invoke(message);
+        internal void OnReplyWho(WhoMessage message) => ReplyWho?.Invoke(message);
 
         #endregion //Events
     }

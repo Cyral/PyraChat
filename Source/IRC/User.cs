@@ -15,7 +15,7 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// Real name.
         /// </summary>
-        public string RealName { get; private set; }
+        public string RealName { get; internal set; }
 
         /// <summary>
         /// Ident (username).
@@ -31,10 +31,11 @@ namespace Pyratron.PyraChat.IRC
         public bool IsAway => Modes.Contains('a') || isAway;
         public bool IsInvisible => Modes.Contains('i');
         public bool IsRestricted => Modes.Contains('r');
-        public bool IsOperator => Modes.Contains('o');
+        public bool IsOperator => Modes.Contains('o') || IsOp;
         public string AwayMessage { get; private set; }
 
         private bool isAway;
+        internal bool IsOp;
 
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
