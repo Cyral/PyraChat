@@ -70,6 +70,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 {
                     irc.Send(new AwayMessage("test"));
                     irc.Send(new JoinMessage("#pyrachat"));
+                    irc.Send(new TimeMessage());
                     //irc.Send(new PrivateMessage("#pyrachat", "Testing123"));
                 };
                 irc.Nick += message =>

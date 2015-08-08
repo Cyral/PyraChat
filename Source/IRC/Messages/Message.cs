@@ -114,6 +114,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (NowAwayMessage.CanProcess(this)) return new NowAwayMessage(this);
             if (UModeIsMessage.CanProcess(this)) return new UModeIsMessage(this);
             if (VersionMessage.CanProcess(this)) return new VersionMessage(this);
+            if (TimeMessage.CanProcess(this)) return new TimeMessage(this);
 
             // Catch all for unhandled error messages.
             if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);
