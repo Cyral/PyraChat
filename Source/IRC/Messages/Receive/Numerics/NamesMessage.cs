@@ -16,16 +16,16 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
         public NamesMessage(Message msg) : base(msg)
         {
             Channel = msg.Client.ChannelFromName(msg.Parameters[2]);
-            if (Channel.UserFromNick(msg.Destination) == msg.Client.User)
+            if (msg.Client.UserFromNick(msg.Destination) == msg.Client.User)
             {
                 var users = msg.Parameters[3].Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var user in users)
                 {
                     var rank = UserRank.FromPrefix(user[0]);
-                    var chanUser = Channel.UserFromNick(user);
+                    var chanUser = msg.Client.UserFromNick(user);
                     if (chanUser == null) //Add new users discovered in response.
                     {
-                        Channel.AddUser(new User(user, rank));
+                        Channel.AddUser(new User(rank != UserRank.None ? user.Substring(1) : user, rank));
                     }
                     else //Update ranks of existing users (ourselves).
                         chanUser.Rank = rank;

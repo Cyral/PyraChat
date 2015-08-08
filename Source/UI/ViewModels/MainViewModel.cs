@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Threading;
 using Pyratron.PyraChat.IRC;
-using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
 
 namespace Pyratron.PyraChat.UI.ViewModels
@@ -32,7 +33,6 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-
         public string ChatLineText
         {
             get { return chatLineText; }
@@ -51,11 +51,11 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 users = value;
                 RaisePropertyChanged();
             }
-        } 
+        }
 
         private readonly Client irc;
         private string logText, channelText, chatLineText;
-        private ObservableCollection<User> users; 
+        private ObservableCollection<User> users;
 
         public MainViewModel(bool designTime)
         {
@@ -68,32 +68,50 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 irc.IRCMessage += message => LogText += message.Text + Environment.NewLine;
                 irc.Connect += () =>
                 {
-                    irc.Send(new JoinMessage("#Pyratron"));
-                    irc.Send(new PrivateMessage("#Pyratron", "Testing123"));
+                    irc.Send(new JoinMessage("#pyrachat"));
+                    //irc.Send(new PrivateMessage("#pyrachat", "Testing123"));
+                };
+                irc.Nick += message =>
+                {
+                    SortUsers();
                 };
                 irc.ChannelJoin += message =>
                 {
                     ChannelText += "Talking in " + message.Channel.Name + Environment.NewLine;
                     message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
+                    { ChannelText += privateMessage.Text + Environment.NewLine; };
+
+                    message.Channel.UserAdd += user =>
                     {
-                        ChannelText += privateMessage.Text + Environment.NewLine;
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            Users.Add(user);
+                            SortUsers();
+                        });
+                    };
+
+                    message.Channel.UserRemove += user =>
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            Users.Remove(user);
+                            SortUsers();
+                        });
                     };
                 };
                 //irc.ReplyMOTDEnd += delegate(MOTDEndMessage message) { Text += message.MOTD + Environment.NewLine; };
                 irc.Start();
             }
+        }
 
-            Users.Add(new User("Cyral", "", "") { Rank = UserRank.Owner });
-            Users.Add(new User("Kaslai", "", "") { Rank= UserRank.Admin});
-            Users.Add(new User("Fer22f", "", "") { Rank = UserRank.Op });
-            Users.Add(new User("Pugmatt", "", "") { Rank = UserRank.HalfOp });
-            Users.Add(new User("Test2", "", "") { Rank = UserRank.Voice });
-            Users.Add(new User("Test3", "", "") { Rank = UserRank.None });
+        private void SortUsers()
+        {
+            Users = new ObservableCollection<User>(Users.OrderBy(u => u.Rank).ThenBy(u => u.Nick));
         }
 
         private void OnEnter()
         {
-            irc.Send(new PrivateMessage("#Pyratron", ChatLineText));
+            irc.Send(new PrivateMessage("#pyrachat", ChatLineText));
             ChatLineText = string.Empty;
         }
     }

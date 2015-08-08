@@ -58,8 +58,10 @@
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
     <Compile Include="Messages\Receive\NickMessage.cs" />
+    <Compile Include="Messages\Receive\PartMessage.cs" />
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Send\JoinMessage.cs" />
+    <Compile Include="Messages\Send\PartMessage.cs" />
     <Compile Include="Messages\Send\PongMessage.cs" />
     <Compile Include="Messages\Receive\PingMessage.cs" />
     <Compile Include="Messages\Receive\NoticeMessage.cs" />

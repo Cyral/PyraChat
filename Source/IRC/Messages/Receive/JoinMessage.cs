@@ -25,12 +25,13 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
 
             if (msg.User == msg.Client.User) //If user joined is ourself
             {
-                msg.Channel.OnUserJoin(this);
                 msg.Client.OnChannelJoin(this);
+                msg.Channel.AddUser(User);
             }
             else
             {
-                //TODO: Request info of user (WHO)
+                msg.Channel.AddUser(User);
+                msg.Channel.OnUserJoin(this);
             }
         }
 

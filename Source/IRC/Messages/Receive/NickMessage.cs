@@ -11,13 +11,14 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
         /// <summary>
         /// The user's new nickname.
         /// </summary>
-        public string Nick => BaseMessage.Parameters[1];
+        public string Nick => BaseMessage.Parameters[0];
 
         public User User => BaseMessage.User;
 
         public NickMessage(Message msg) : base(msg)
         {
-            
+            User.Nick = Nick;
+            msg.Client.OnNick(this);
         }
 
         public static bool CanProcess(Message msg)

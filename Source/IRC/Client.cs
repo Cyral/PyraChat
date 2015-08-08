@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using Pyratron.PyraChat.IRC.Messages;
@@ -11,6 +10,7 @@ using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
+using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
 
 namespace Pyratron.PyraChat.IRC
@@ -32,8 +32,9 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public User User { get; }
 
-        internal StringBuilder MOTDBuilder { get; set; } = new StringBuilder();
+        public List<User> Users { get; } 
 
+        internal StringBuilder MOTDBuilder { get; set; } = new StringBuilder();
         public List<Channel> Channels { get; }
         private readonly Thread networkThread;
         private readonly TcpClient tcpClient;
@@ -50,6 +51,7 @@ namespace Pyratron.PyraChat.IRC
         public Client(string host, int port, User user)
         {
             Channels = new List<Channel>();
+            Users = new List<User>();
             Host = host;
             Port = port;
             User = user;
@@ -79,7 +81,7 @@ namespace Pyratron.PyraChat.IRC
             networkThread.Start();
 
             //Send user information
-            Send(new Messages.Send.UserMessage(User));
+            Send(new UserMessage(User));
             Send(new Messages.Send.NickMessage(User));
         }
 
@@ -100,11 +102,42 @@ namespace Pyratron.PyraChat.IRC
 
                 //Parse the message
                 var msg = new Message(this, line);
-                    //Choose a message type and process the message
-                    msg.Process();
-                    OnIRCMessage(msg);
+                //Choose a message type and process the message
+                msg.Process();
+                OnIRCMessage(msg);
             }
         }
+
+
+        /// <summary>
+        /// Returns the user whose nickname is equal to the value specified.
+        /// </summary>
+        public User UserFromNick(string nick)
+        {
+            //Remove rank from nick
+            var rank = UserRank.FromPrefix(nick[0]);
+            if (rank != UserRank.None)
+                nick = nick.Substring(1);
+            return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Returns the user that best matches the mask provided.
+        /// If any fields are blank in the user, they will be filled in with data from the mask.
+        /// </summary>
+        public User UserFromMask(string mask)
+        {
+            var match = User.MaskRegex.Match(mask);
+            if (!match.Success) return null;
+
+            var user = UserFromNick(match.Groups[1].Value);
+            if (user == null)
+                return null;
+            user.Ident = match.Groups[2].Value;
+            user.Host = match.Groups[3].Value;
+            return user;
+        }
+
 
         public Channel ChannelFromName(string name)
         {
@@ -142,10 +175,14 @@ namespace Pyratron.PyraChat.IRC
         public delegate void ReplyMOTDEventHandler(MOTDMessage message);
 
         public delegate void ReplyLUserClientEventHandler(LUserClientMessage message);
+
         public delegate void ReplyNamesEventHandler(NamesMessage message);
+
         public delegate void ReplyEndOfNamesEventHandler(EndOfNamesMessage message);
 
         public delegate void ChannelJoinEventHandler(JoinMessage message);
+
+        public delegate void NickEventHandler(NickMessage message);
 
         /// <summary>
         /// General output logging message.
@@ -169,6 +206,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyNamesEventHandler ReplyNames;
         public event ReplyEndOfNamesEventHandler ReplyEndOfNames;
         public event ChannelJoinEventHandler ChannelJoin;
+        public event NickEventHandler Nick;
 
         /// <summary>
         /// General output logging message.
@@ -193,6 +231,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyNames(NamesMessage message) => ReplyNames?.Invoke(message);
         internal void OnReplyEndOfNames(EndOfNamesMessage message) => ReplyEndOfNames?.Invoke(message);
         internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
+        internal void OnNick(NickMessage message) => Nick?.Invoke(message);
 
         #endregion //Events
     }

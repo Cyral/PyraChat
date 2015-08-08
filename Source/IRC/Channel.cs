@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 
 namespace Pyratron.PyraChat.IRC
@@ -15,11 +16,13 @@ namespace Pyratron.PyraChat.IRC
         public string Mode { get; private set; }
         public string Topic { get; private set; }
         public ChannelType Type { get; }
-        public List<User> Users { get; }
+        public Client Client { get; private set; }
+        public IEnumerable<User> Users => Client.Users.Where(user => user.Channel != null && user.Channel == this);
+        
 
         public Channel(Client client, string name)
         {
-            Users = new List<User>();
+            Client = client;
             Name = name;
             Type = ChannelType.FromPrefix(name[0]);
         }
@@ -29,35 +32,18 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public void AddUser(User user)
         {
-            Users.Add(user);
+            user.Channel = this;
+            if (!Client.Users.Contains(user))
+                Client.Users.Add(user);
             OnUserAdd(user);
         }
 
-        /// <summary>
-        /// Returns the user whose nickname is equal to the value specified.
-        /// </summary>
-        public User UserFromNick(string nick)
-        {
-            //Remove rank from nick
-            var rank = UserRank.FromPrefix(nick[0]);
-            if (rank != UserRank.None)
-                nick = nick.Substring(1);
-            return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
-        }
 
-        /// <summary>
-        /// Returns the user that best matches the mask provided.
-        /// If any fields are blank in the user, they will be filled in with data from the mask.
-        /// </summary>
-        public User UserFromMask(string mask)
+        public void RemoveUser(User user)
         {
-            var match = User.MaskRegex.Match(mask);
-            if (!match.Success) return null;
-
-            var user = UserFromNick(match.Groups[1].Value);
-            user.Ident = match.Groups[2].Value;
-            user.Host = match.Groups[3].Value;
-            return user;
+            user.Channel = null;
+            Client.Users.Remove(user);
+            OnUserRemove(user);
         }
 
         #region Events
@@ -66,16 +52,22 @@ namespace Pyratron.PyraChat.IRC
         public delegate void MessageEventHandler(PrivateMessage message);
         public delegate void UserJoinEventHandler(JoinMessage message);
         public delegate void UserAddEventHandler(User user);
+        public delegate void UserPartEventHandler(PartMessage message);
+        public delegate void UserRemoveEventHandler(User user);
 
         public event NoticeEventHandler Notice;
         public event MessageEventHandler Message;
         public event UserJoinEventHandler UserJoin;
         public event UserAddEventHandler UserAdd;
+        public event UserPartEventHandler UserPart;
+        public event UserRemoveEventHandler UserRemove;
 
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
         internal void OnUserJoin(JoinMessage message) => UserJoin?.Invoke(message);
+        internal void OnUserPart(PartMessage message) => UserPart?.Invoke(message);
         internal void OnUserAdd(User user) => UserAdd?.Invoke(user);
+        internal void OnUserRemove(User user) => UserRemove?.Invoke(user);
 
         #endregion //Events
     }

@@ -44,8 +44,11 @@ namespace Pyratron.PyraChat.IRC.Messages
 
         public bool IsChannel => Channel != null;
 
+        /// <summary>
+        /// Returns the user who sent the message. If null, a new user is created from the mask.
+        /// </summary>
         public User User
-            => Channel.UserFromMask(Prefix);
+            => Client.UserFromMask(Prefix) ?? new User(Prefix);
 
         /// <summary>
         /// Message parameters.
@@ -79,6 +82,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         {
             if (NickMessage.CanProcess(this)) return new NickMessage(this);
             if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
+            if (PartMessage.CanProcess(this)) return new PartMessage(this);
             if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);
             if (PingMessage.CanProcess(this)) return new PingMessage(this);
             if (NoticeMessage.CanProcess(this)) return new NoticeMessage(this);

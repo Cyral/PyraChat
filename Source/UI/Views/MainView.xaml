@@ -6,6 +6,7 @@
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:System="clr-namespace:System;assembly=mscorlib"
                       xmlns:irc="clr-namespace:Pyratron.PyraChat.IRC;assembly=IRC"
+                      xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                       mc:Ignorable="d"
                       Title="PyraChat IRC"
                       TitleCaps="False"
@@ -27,7 +28,7 @@
                     Content="View"
                     Foreground="{StaticResource WhiteBrush}" />
             <Button Command="{Binding }"
-                    ToolTip=""
+                    ToolTip="Join and edit servers."
                     Content="Networks"
                     Foreground="{StaticResource WhiteBrush}" />
         </controls:WindowCommands>

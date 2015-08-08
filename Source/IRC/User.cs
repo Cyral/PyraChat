@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -8,7 +7,7 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// Current nickname.
         /// </summary>
-        public string Nick { get; private set; }
+        public string Nick { get; internal set; }
 
         /// <summary>
         /// Real name.
@@ -19,12 +18,14 @@ namespace Pyratron.PyraChat.IRC
         /// Ident (username).
         /// </summary>
         public string Ident { get; internal set; }
+
         public string Host { get; internal set; }
         public string Mode { get; private set; }
-        
+        public Channel Channel { get; internal set; }
         public UserRank Rank { get; set; } = UserRank.None;
 
-        internal static Regex MaskRegex { get; } =  new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
+        internal static Regex MaskRegex { get; } =
+            new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
 
         public User(string mask)
         {
