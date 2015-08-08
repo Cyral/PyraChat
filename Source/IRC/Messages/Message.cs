@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
+using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
 using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using KickMessage = Pyratron.PyraChat.IRC.Messages.Receive.KickMessage;

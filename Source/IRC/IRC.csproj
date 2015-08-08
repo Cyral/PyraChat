@@ -76,6 +76,7 @@
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Receive\QuitMessage.cs" />
     <Compile Include="Messages\Receive\UserModeMessage.cs" />
+    <Compile Include="Messages\Send\AwayMessage.cs" />
     <Compile Include="Messages\Send\ChannelModeMessage.cs" />
     <Compile Include="Messages\Send\InviteMessage.cs" />
     <Compile Include="Messages\Send\JoinMessage.cs" />

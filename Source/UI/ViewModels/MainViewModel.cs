@@ -68,7 +68,8 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 irc.IRCMessage += message => LogText += message.Text + Environment.NewLine;
                 irc.Connect += () =>
                 {
-                    irc.Send(new JoinMessage("#pyratron"));
+                    irc.Send(new AwayMessage("test"));
+                    irc.Send(new JoinMessage("#pyrachat"));
                     //irc.Send(new PrivateMessage("#pyrachat", "Testing123"));
                 };
                 irc.Nick += message =>

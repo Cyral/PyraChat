@@ -9,6 +9,7 @@ using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 using Pyratron.PyraChat.IRC.Messages.Send;
+using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
 using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
