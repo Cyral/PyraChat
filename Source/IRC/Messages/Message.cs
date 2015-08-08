@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Security;
 using System.Text.RegularExpressions;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
@@ -14,6 +12,7 @@ using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PartMessage = Pyratron.PyraChat.IRC.Messages.Receive.PartMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
 using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
+using ChannelModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.ChannelModeMessage;
 using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
 
@@ -22,7 +21,7 @@ namespace Pyratron.PyraChat.IRC.Messages
     public class Message
     {
         private static readonly Regex parseRegex = new Regex(@"(?:[:](\S+) )?(\S+)(?: (?!:)(.+?))?(?: [:](.+))?$");
-
+        private static readonly char[] separator = {' '};
         public Client Client { get; }
 
         /// <summary>
@@ -66,11 +65,8 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// </summary>
         public string[] Parameters { get; }
 
-        private static readonly char[] separator = {' '};
-
         static Message()
         {
-
         }
 
         public Message(Client client, string message)
@@ -83,7 +79,10 @@ namespace Pyratron.PyraChat.IRC.Messages
 
             Prefix = match.Groups[1].Value;
             Type = match.Groups[2].Value;
-            Parameters = match.Groups[3].Value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Concat(new[] {match.Groups[4].Value}).ToArray();
+            Parameters =
+                match.Groups[3].Value.Split(separator, StringSplitOptions.RemoveEmptyEntries)
+                    .Concat(new[] {match.Groups[4].Value})
+                    .ToArray();
         }
 
         /// <summary>
@@ -122,6 +121,9 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (ListMessage.CanProcess(this)) return new ListMessage(this);
             if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
             if (YoureOperMessage.CanProcess(this)) return new YoureOperMessage(this);
+
+            // Catch all for unhandled error messages.
+            if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;

@@ -36,8 +36,7 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public User User { get; }
 
-        public List<User> Users { get; } 
-
+        public List<User> Users { get; }
         internal StringBuilder MOTDBuilder { get; set; } = new StringBuilder();
         public List<Channel> Channels { get; }
         private readonly Thread networkThread;
@@ -112,7 +111,6 @@ namespace Pyratron.PyraChat.IRC
             }
         }
 
-
         /// <summary>
         /// Returns the user whose nickname is equal to the value specified.
         /// </summary>
@@ -141,7 +139,6 @@ namespace Pyratron.PyraChat.IRC
             user.Host = match.Groups[3].Value;
             return user;
         }
-
 
         public Channel ChannelFromName(string name)
         {
@@ -197,7 +194,7 @@ namespace Pyratron.PyraChat.IRC
         public delegate void RankChangeEventHandler(User user, UserRank rank);
 
         public delegate void InviteEventHandler(InviteMessage message);
-        
+
         public delegate void ReplyListEventHandler(ListMessage message);
 
         public delegate void ReplyListEndEventHandler(ListEndMessage message);
@@ -206,15 +203,30 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyYoureOperEventHandler(YoureOperMessage message);
 
+        public delegate void ErrorEventHandler(ErrorMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
         public event IRCMessageEventHandler IRCMessage;
 
+        /// <summary>
+        /// When a message is received.
+        /// </summary>
         public event MessageEventHandler Message;
+
+        /// <summary>
+        /// When a PING message is received.
+        /// </summary>
         public event PingEventHandler Ping;
+
         public event NoticeEventHandler Notice;
+
+        /// <summary>
+        /// When the connection is established.
+        /// </summary>
         public event ConnectEventHandler Connect;
+
         public event ReplyWelcomeEventHandler ReplyWelcome;
         public event ReplyYourHostEventHandler ReplyYourHost;
         public event ReplyCreatedEventHandler ReplyCreated;
@@ -240,9 +252,10 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyYoureOperEventHandler ReplyYoureOper;
 
         /// <summary>
-        /// General output logging message.
+        /// When an error message (400-599) is received.
         /// </summary>
-        /// <param name="message">IRC message received.</param>
+        public event ErrorEventHandler Error;
+
         internal void OnIRCMessage(Message message) => IRCMessage?.Invoke(message);
 
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
@@ -272,6 +285,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyListEnd(ListEndMessage message) => ReplyListEnd?.Invoke(message);
         internal void OnReplyUModeIs(UModeIsMessage message) => ReplyUModeIs?.Invoke(message);
         internal void OnReplyYoureOper(YoureOperMessage message) => ReplyYoureOper?.Invoke(message);
+        internal void OnError(ErrorMessage message) => Error?.Invoke(message);
 
         #endregion //Events
     }
