@@ -67,6 +67,7 @@
     <Compile Include="Messages\Receive\Numerics\TopicWhoTimeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\UModeIsMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\UnAwayMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\VersionMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WelcomeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Messages\Send\JoinMessage.cs" />
     <Compile Include="Messages\Send\KickMessage.cs" />
     <Compile Include="Messages\Send\ListMessage.cs" />
+    <Compile Include="Messages\Send\VersionMessage.cs" />
     <Compile Include="Messages\Send\LUsersMessage.cs" />
     <Compile Include="Messages\Send\MOTDMessage.cs" />
     <Compile Include="Messages\Send\OperMessage.cs" />

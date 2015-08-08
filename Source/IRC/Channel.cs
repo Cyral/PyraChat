@@ -3,13 +3,6 @@ using System.Linq;
 using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
-using Pyratron.PyraChat.IRC.Messages.Send;
-using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
-using KickMessage = Pyratron.PyraChat.IRC.Messages.Receive.KickMessage;
-using ChannelModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.ChannelModeMessage;
-using PartMessage = Pyratron.PyraChat.IRC.Messages.Receive.PartMessage;
-using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
-using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 
 namespace Pyratron.PyraChat.IRC
 {

@@ -8,16 +8,6 @@ using System.Threading;
 using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
-using Pyratron.PyraChat.IRC.Messages.Send;
-using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
-using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
-using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
-using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
-using MOTDMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.MOTDMessage;
-using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
-using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
-using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
-using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -65,7 +55,7 @@ namespace Pyratron.PyraChat.IRC
             networkThread = new Thread(ProcessMessages);
 
             //Register neccessary internal events
-            Ping += message => Send(new PongMessage(message.Extra));
+            Ping += message => Send(new Messages.Send.PongMessage(message.Extra));
         }
 
         /// <summary>
@@ -86,7 +76,7 @@ namespace Pyratron.PyraChat.IRC
             networkThread.Start();
 
             //Send user information
-            Send(new UserMessage(User));
+            Send(new Messages.Send.UserMessage(User));
             Send(new Messages.Send.NickMessage(User));
         }
 
@@ -213,6 +203,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyNowAwayEventHandler(NowAwayMessage message);
 
+        public delegate void ReplyVersionEventHandler(VersionMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -261,6 +253,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyAwayEventHandler ReplyAway;
         public event ReplyUnAwayEventHandler ReplyUnAway;
         public event ReplyNowAwayEventHandler ReplyNowAway;
+        public event ReplyVersionEventHandler ReplyVersion;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -300,6 +293,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyAway(AwayMessage message) => ReplyAway?.Invoke(message);
         internal void OnReplyUnAway(UnAwayMessage message) => ReplyUnAway?.Invoke(message);
         internal void OnReplyNowAway(NowAwayMessage message) => ReplyNowAway?.Invoke(message);
+        internal void OnReplyVersion(VersionMessage message) => ReplyVersion?.Invoke(message);
 
         #endregion //Events
     }
