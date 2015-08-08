@@ -14,13 +14,64 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// List of channel modes.
+        /// </summary>
         public List<char> Modes { get; } = new List<char>();
+
+        /// <summary>
+        /// Channel topic.
+        /// </summary>
         public ChannelTopic Topic { get; private set; } = new ChannelTopic();
+
+        /// <summary>
+        /// Type of channel.
+        /// </summary>
         public ChannelType Type { get; }
+
         public Client Client { get; }
 
+        /// <summary>
+        /// Users in the channel.
+        /// </summary>
         public IEnumerable<User> Users
             => Client.Users.Where(user => user.Channels != null && user.Channels.Contains(this));
+
+        /// <summary>
+        /// List of masks banned from the channel.
+        /// </summary>
+        public List<string> BanList { get; } = new List<string>();
+
+        /// <summary>
+        /// List of masked allows in the channel even if they are banned.
+        /// </summary>
+        public List<string> ExceptionList { get; } = new List<string>();
+
+        /// <summary>
+        /// List of masks that are allowed in the channel in invite only mode.
+        /// </summary>
+        public List<string> InviteList { get; } = new List<string>();
+
+        // Channel modes. (See https://www.alien.net.au/irc/chanmodes.html)
+        public bool IsInviteOnly => Modes.Contains('i');
+        public bool IsModeratedOnly => Modes.Contains('m');
+        public bool NoOutsideMessages => Modes.Contains('n');
+        public bool IsPrivate => Modes.Contains('p');
+        public bool IsSecret => Modes.Contains('s');
+        public bool IsTopicLocked => Modes.Contains('t');
+        public bool IsAnonymous => Modes.Contains('a');
+        public bool IsLimited => Modes.Contains('l');
+        public bool IsKeyLocked => Modes.Contains('k');
+
+        /// <summary>
+        /// User limit if channel is limited (+l).
+        /// </summary>
+        public int Userlimit { get; private set; }
+
+        /// <summary>
+        /// Channel key if channel is locked (+k).
+        /// </summary>
+        public string Key { get; private set; }
 
         public Channel(Client client, string name)
         {
@@ -52,35 +103,79 @@ namespace Pyratron.PyraChat.IRC
             switch (mode)
             {
                 case 'v':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.AddRank(client, UserRank.Voice);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.AddRank(client, UserRank.Voice);
+                    return 1;
+                }
                 case 'h':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.AddRank(client, UserRank.HalfOp);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.AddRank(client, UserRank.HalfOp);
+                    return 1;
+                }
                 case 'o':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.AddRank(client, UserRank.Op);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.AddRank(client, UserRank.Op);
+                    return 1;
+                }
                 case 'a':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.AddRank(client, UserRank.Admin);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.AddRank(client, UserRank.Admin);
+                    return 1;
+                }
                 case 'q':
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.AddRank(client, UserRank.Owner);
+                    return 1;
+                }
+                case 'b':
+                {
+                    if (!BanList.Contains(parameter))
                     {
-                        var user = client.UserFromNick(parameter);
-                        user.AddRank(client, UserRank.Owner);
+                        BanList.Add(parameter);
+                        OnBanChange(parameter, false);
+                    }
+                    return 1;
+                }
+                case 'e':
+                {
+                    if (!ExceptionList.Contains(parameter))
+                    {
+                        ExceptionList.Add(parameter);
+                        OnExceptionChange(parameter, false);
+                    }
+                    return 1;
+                }
+                case 'I':
+                {
+                    if (!InviteList.Contains(parameter))
+                    {
+                        InviteList.Add(parameter);
+                        OnInviteChange(parameter, false);
+                    }
+                    return 1;
+                }
+                case 'k':
+                {
+                    Key = parameter;
+                    Modes.Add(mode);
+                    return 1;
+                }
+                case 'l':
+                {
+                    int limit;
+                    if (int.TryParse(parameter, out limit))
+                    {
+                        Userlimit = limit;
+                        Modes.Add(mode);
                         return 1;
                     }
+                    break;
+                }
                 default:
                 {
                     if (!Modes.Contains(mode))
@@ -108,27 +203,73 @@ namespace Pyratron.PyraChat.IRC
                     return 1;
                 }
                 case 'o':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.RemoveRank(client, UserRank.Op);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.RemoveRank(client, UserRank.Op);
+                    return 1;
+                }
                 case 'a':
-                    {
-                        var user = client.UserFromNick(parameter);
-                        user.RemoveRank(client, UserRank.Admin);
-                        return 1;
-                    }
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.RemoveRank(client, UserRank.Admin);
+                    return 1;
+                }
                 case 'q':
+                {
+                    var user = client.UserFromNick(parameter);
+                    user.RemoveRank(client, UserRank.Owner);
+                    return 1;
+                }
+                case 'b':
+                {
+                    if (BanList.Contains(parameter))
                     {
-                        var user = client.UserFromNick(parameter);
-                        user.RemoveRank(client, UserRank.Owner);
-                        return 1;
+                        BanList.Remove(parameter);
+                        OnBanChange(parameter, false);
                     }
-                default:
+                    return 1;
+                }
+                case 'e':
+                {
+                    if (ExceptionList.Contains(parameter))
+                    {
+                        ExceptionList.Remove(parameter);
+                        OnExceptionChange(parameter, false);
+                    }
+                    return 1;
+                }
+                case 'I':
+                {
+                    if (InviteList.Contains(parameter))
+                    {
+                        InviteList.Remove(parameter);
+                        OnInviteChange(parameter, false);
+                    }
+                    return 1;
+                }
+                case 'k':
+                {
+                    if (Key.Equals(parameter))
+                    {
+                        Key = null;
+                        if (Modes.Contains(mode))
+                            Modes.Remove(mode);
+                    }
+                    return 1;
+                }
+                case 'l':
+                {
+                    Userlimit = -1;
                     if (Modes.Contains(mode))
                         Modes.Remove(mode);
                     break;
+                }
+                default:
+                {
+                    if (Modes.Contains(mode))
+                        Modes.Remove(mode);
+                    break;
+                }
             }
             return 0;
         }
@@ -153,6 +294,12 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ChannelModeEventHandler(ChannelModeMessage message);
 
+        public delegate void BanChangeEventHandler(string mask, bool isBanned);
+
+        public delegate void ExceptionChangeEventHandler(string mask, bool isException);
+
+        public delegate void InviteChangeEventHandler(string mask, bool isInvited);
+
         public event NoticeEventHandler Notice;
         public event MessageEventHandler Message;
         public event UserJoinEventHandler UserJoin;
@@ -162,6 +309,9 @@ namespace Pyratron.PyraChat.IRC
         public event TopicEventHandler TopicChange;
         public event TopicWhoTimeEventHandler TopicWhoTime;
         public event ChannelModeEventHandler ChannelMode;
+        public event BanChangeEventHandler BanChange;
+        public event ExceptionChangeEventHandler ExceptionChange;
+        public event InviteChangeEventHandler InviteChange;
 
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
@@ -172,6 +322,9 @@ namespace Pyratron.PyraChat.IRC
         internal void OnTopicChange(TopicMessage message) => TopicChange?.Invoke(message);
         internal void OnTopicWhoTime(TopicWhoTimeMessage message) => TopicWhoTime?.Invoke(message);
         internal void OnChannelMode(ChannelModeMessage message) => ChannelMode?.Invoke(message);
+        internal void OnBanChange(string mask, bool isBanned) => BanChange?.Invoke(mask, isBanned);
+        internal void OnExceptionChange(string mask, bool isException) => ExceptionChange?.Invoke(mask, isException);
+        internal void OnInviteChange(string mask, bool isInvited) => BanChange?.Invoke(mask, isInvited);
 
         #endregion //Events
     }

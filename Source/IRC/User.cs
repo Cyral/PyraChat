@@ -24,7 +24,7 @@ namespace Pyratron.PyraChat.IRC
         public string Host { get; internal set; }
         public List<char> Modes { get; private set; } = new List<char>();
         public List<Channel> Channels { get; internal set; } = new List<Channel>();
-        public UserRank Rank => ranks.Max();
+        public UserRank Rank => ranks.Min();
         private List<UserRank> ranks = new List<UserRank>(); 
 
         public bool IsAway => Modes.Contains('a');
