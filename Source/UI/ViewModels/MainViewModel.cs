@@ -53,6 +53,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
+        private Channel channel;
         private readonly Client irc;
         private string logText, channelText, chatLineText;
         private ObservableCollection<User> users;
@@ -76,7 +77,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 {
                     SortUsers();
                 };
-                irc.RankChange += (user, rank) =>
+                irc.RankChange += (user, channel, rank) =>
                 {
                     SortUsers();
                 };
@@ -86,6 +87,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 };
                 irc.ChannelJoin += message =>
                 {
+                    channel = message.Channel;
                     ChannelText += "Talking in " + message.Channel.Name + Environment.NewLine;
                     message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
                     { ChannelText += privateMessage.Text + Environment.NewLine; };
@@ -115,7 +117,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
 
         private void SortUsers()
         {
-            Users = new ObservableCollection<User>(Users.OrderBy(u => u.Rank).ThenBy(u => u.Nick));
+            Users = new ObservableCollection<User>(Users.OrderBy(u => u.GetRank(channel.Name)).ThenBy(u => u.Nick));
         }
 
         private void OnEnter()

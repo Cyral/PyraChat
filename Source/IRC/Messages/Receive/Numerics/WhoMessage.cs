@@ -50,7 +50,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
                         default: //Handle ranks
                             var rank = UserRank.FromPrefix(character);
                             if (rank != UserRank.None)
-                                user.AddRank(msg.Client, rank);
+                                user.AddRank(msg.Client, Channel, rank);
                             break;
                     }
                 }

@@ -97,38 +97,38 @@ namespace Pyratron.PyraChat.IRC
             OnUserRemove(user);
         }
 
-        public int AddMode(Client client, char mode, string parameter = "")
+        public int AddMode(Client client, string channel, char mode, string parameter = "")
         {
             switch (mode)
             {
                 case 'v':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.AddRank(client, UserRank.Voice);
+                    user.AddRank(client, channel, UserRank.Voice);
                     return 1;
                 }
                 case 'h':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.AddRank(client, UserRank.HalfOp);
+                    user.AddRank(client, channel, UserRank.HalfOp);
                     return 1;
                 }
                 case 'o':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.AddRank(client, UserRank.Op);
+                    user.AddRank(client, channel, UserRank.Op);
                     return 1;
                 }
                 case 'a':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.AddRank(client, UserRank.Admin);
+                    user.AddRank(client, channel, UserRank.Admin);
                     return 1;
                 }
                 case 'q':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.AddRank(client, UserRank.Owner);
+                    user.AddRank(client, channel, UserRank.Owner);
                     return 1;
                 }
                 case 'b':
@@ -185,38 +185,38 @@ namespace Pyratron.PyraChat.IRC
             return 0;
         }
 
-        public int RemoveMode(Client client, char mode, string parameter = "")
+        public int RemoveMode(Client client, string channel, char mode, string parameter = "")
         {
             switch (mode)
             {
                 case 'v':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.RemoveRank(client, UserRank.Voice);
+                    user.RemoveRank(client, channel, UserRank.Voice);
                     return 1;
                 }
                 case 'h':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.RemoveRank(client, UserRank.HalfOp);
+                    user.RemoveRank(client, channel, UserRank.HalfOp);
                     return 1;
                 }
                 case 'o':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.RemoveRank(client, UserRank.Op);
+                    user.RemoveRank(client, channel, UserRank.Op);
                     return 1;
                 }
                 case 'a':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.RemoveRank(client, UserRank.Admin);
+                    user.RemoveRank(client, channel, UserRank.Admin);
                     return 1;
                 }
                 case 'q':
                 {
                     var user = client.UserFromNick(parameter);
-                    user.RemoveRank(client, UserRank.Owner);
+                    user.RemoveRank(client, channel, UserRank.Owner);
                     return 1;
                 }
                 case 'b':

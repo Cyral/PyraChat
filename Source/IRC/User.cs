@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -23,26 +22,23 @@ namespace Pyratron.PyraChat.IRC
         public string Ident { get; internal set; }
 
         public string Host { get; internal set; }
-        public List<char> Modes { get; private set; } = new List<char>();
+        public List<char> Modes { get; } = new List<char>();
         public List<Channel> Channels { get; internal set; } = new List<Channel>();
-        public UserRank Rank => ranks.Min();
-        private List<UserRank> ranks = new List<UserRank>(); 
-
         public bool IsAway => Modes.Contains('a') || isAway;
         public bool IsInvisible => Modes.Contains('i');
         public bool IsRestricted => Modes.Contains('r');
         public bool IsOperator => Modes.Contains('o') || IsOp;
         public string AwayMessage { get; private set; }
 
-        private bool isAway;
-        internal bool IsOp;
-
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
 
+        private readonly Dictionary<string, List<UserRank>> ranks = new Dictionary<string, List<UserRank>>();
+        private bool isAway;
+        internal bool IsOp;
+
         public User(string mask)
         {
-            ranks.Add(UserRank.None);
             var match = MaskRegex.Match(mask);
             if (!match.Success) return;
             Nick = match.Groups[1].Value;
@@ -52,36 +48,57 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string nick, string realname, string ident, string hostname = "")
         {
-            ranks.Add(UserRank.None);
             Nick = nick;
             RealName = realname;
             Ident = ident;
             Host = hostname;
         }
 
-        public User(string nick, UserRank rank)
+        public User(string nick, string channel, UserRank rank)
         {
-            ranks.Add(UserRank.None);
             Nick = nick;
-            ranks.Add(rank);
+            if (!ranks.ContainsKey(channel))
+                ranks.Add(channel, new List<UserRank>());
+            ranks[channel].Add(rank);
         }
 
-        public void AddRank(Client client, UserRank rank)
+        public void AddRank(Client client, string channel, UserRank rank)
         {
-            if (!ranks.Contains(rank))
+            if (!ranks.ContainsKey(channel))
+                ranks.Add(channel, new List<UserRank>());
+            if (!ranks[channel].Contains(rank))
             {
-                ranks.Add(rank);
-                client.OnRankChange(this, Rank);
+                if (!ranks[channel].Contains(UserRank.None))
+                    ranks[channel].Add(UserRank.None);
+                ranks[channel].Add(rank);
+                client.OnRankChange(this, channel, ranks[channel].Min());
             }
         }
 
-        public void RemoveRank(Client client, UserRank rank)
+        public void RemoveRank(Client client, string channel, UserRank rank)
         {
-            if (ranks.Contains(rank))
+            if (ranks.ContainsKey(channel) && ranks[channel].Contains(rank))
             {
-                ranks.Remove(rank);
-                client.OnRankChange(this, Rank);
+                ranks[channel].Remove(rank);
+                if (!ranks[channel].Contains(UserRank.None))
+                    ranks[channel].Add(UserRank.None);
+                client.OnRankChange(this, channel, ranks[channel].Min());
             }
+        }
+
+        public UserRank GetRank(Channel channel)
+        {
+            return GetRank(channel.Name);
+        }
+
+        public UserRank GetRank(string channel)
+        {
+            if (!ranks.ContainsKey(channel))
+            {
+                ranks.Add(channel, new List<UserRank>());
+                ranks[channel].Add(UserRank.None);
+            }
+            return ranks[channel].Min();
         }
 
         public void AddMode(Client client, char mode)
@@ -104,7 +121,7 @@ namespace Pyratron.PyraChat.IRC
                 client.OnAwayChange(this, false);
         }
 
-        internal void SetIsAway(Client client, bool away, string reason ="")
+        internal void SetIsAway(Client client, bool away, string reason = "")
         {
             AwayMessage = away ? reason : string.Empty;
             isAway = away;

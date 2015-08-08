@@ -21,8 +21,8 @@
                         add = true;
                     else if (character.Equals('-'))
                         add = false;
-                    else if (add) paramIndex += msg.Channel.AddMode(msg.Client, character, msg.Parameters[paramIndex]);
-                    else paramIndex += msg.Channel.RemoveMode(msg.Client, character, msg.Parameters[paramIndex]);
+                    else if (add) paramIndex += msg.Channel.AddMode(msg.Client, msg.Channel.Name, character, msg.Parameters[paramIndex]);
+                    else paramIndex += msg.Channel.RemoveMode(msg.Client, msg.Channel.Name, character, msg.Parameters[paramIndex]);
                 }
                 msg.Channel.OnChannelMode(this);
             }
