@@ -61,7 +61,9 @@
     <Compile Include="Messages\Receive\PartMessage.cs" />
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Send\JoinMessage.cs" />
+    <Compile Include="Messages\Send\OperMessage.cs" />
     <Compile Include="Messages\Send\PartMessage.cs" />
+    <Compile Include="Messages\Send\PassMessage.cs" />
     <Compile Include="Messages\Send\PongMessage.cs" />
     <Compile Include="Messages\Receive\PingMessage.cs" />
     <Compile Include="Messages\Receive\NoticeMessage.cs" />
