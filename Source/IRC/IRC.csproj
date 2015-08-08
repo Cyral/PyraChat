@@ -62,10 +62,12 @@
     <Compile Include="Messages\Receive\Numerics\BounceMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\TopicMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\TopicWhoTimeMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\UModeIsMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WelcomeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
     <Compile Include="Messages\Receive\NickMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\YoureOperMessage.cs" />
     <Compile Include="Messages\Receive\PartMessage.cs" />
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Receive\QuitMessage.cs" />

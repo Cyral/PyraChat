@@ -19,7 +19,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.WriteLine($"NICK {Name} {Password}");
+            writer.WriteLine($"OPER {Name} {Password}");
         }
     }
 }

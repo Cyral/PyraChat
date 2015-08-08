@@ -3,9 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
 using System.Text.RegularExpressions;
-using Pyratron.PyraChat.IRC.Messages.Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
+using Pyratron.PyraChat.IRC.Messages.Send;
+using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
+using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
+using KickMessage = Pyratron.PyraChat.IRC.Messages.Receive.KickMessage;
+using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
+using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
+using PartMessage = Pyratron.PyraChat.IRC.Messages.Receive.PartMessage;
+using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
+using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
+using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
+using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
 
 namespace Pyratron.PyraChat.IRC.Messages
 {
@@ -111,6 +121,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (TopicWhoTimeMessage.CanProcess(this)) return new TopicWhoTimeMessage(this);
             if (ListMessage.CanProcess(this)) return new ListMessage(this);
             if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
+            if (YoureOperMessage.CanProcess(this)) return new YoureOperMessage(this);
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;

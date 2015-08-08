@@ -202,6 +202,10 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyListEndEventHandler(ListEndMessage message);
 
+        public delegate void ReplyUModeIsEventHandler(UModeIsMessage message);
+
+        public delegate void ReplyYoureOperEventHandler(YoureOperMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -232,7 +236,8 @@ namespace Pyratron.PyraChat.IRC
         public event InviteEventHandler Invite;
         public event ReplyListEventHandler ReplyList;
         public event ReplyListEndEventHandler ReplyListEnd;
-
+        public event ReplyUModeIsEventHandler ReplyUModeIs;
+        public event ReplyYoureOperEventHandler ReplyYoureOper;
 
         /// <summary>
         /// General output logging message.
@@ -265,6 +270,8 @@ namespace Pyratron.PyraChat.IRC
         internal void OnInvite(InviteMessage message) => Invite?.Invoke(message);
         internal void OnReplyList(ListMessage message) => ReplyList?.Invoke(message);
         internal void OnReplyListEnd(ListEndMessage message) => ReplyListEnd?.Invoke(message);
+        internal void OnReplyUModeIs(UModeIsMessage message) => ReplyUModeIs?.Invoke(message);
+        internal void OnReplyYoureOper(YoureOperMessage message) => ReplyYoureOper?.Invoke(message);
 
         #endregion //Events
     }
