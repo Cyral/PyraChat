@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Security;
 using System.Text.RegularExpressions;
+using Pyratron.PyraChat.IRC.Messages.Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 
@@ -88,6 +89,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (PingMessage.CanProcess(this)) return new PingMessage(this);
             if (NoticeMessage.CanProcess(this)) return new NoticeMessage(this);
             if (UserModeMessage.CanProcess(this)) return new UserModeMessage(this);
+            if (ChannelModeMessage.CanProcess(this)) return new ChannelModeMessage(this);
 
             if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
             if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);

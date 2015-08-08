@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Pyratron.PyraChat.IRC
@@ -23,7 +24,8 @@ namespace Pyratron.PyraChat.IRC
         public string Host { get; internal set; }
         public List<char> Modes { get; private set; } = new List<char>();
         public List<Channel> Channels { get; internal set; } = new List<Channel>();
-        public UserRank Rank { get; set; } = UserRank.None;
+        public UserRank Rank => ranks.Max();
+        private List<UserRank> ranks = new List<UserRank>(); 
 
         public bool IsAway => Modes.Contains('a');
         public bool IsInvisible => Modes.Contains('i');
@@ -35,6 +37,7 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string mask)
         {
+            ranks.Add(UserRank.None);
             var match = MaskRegex.Match(mask);
             if (!match.Success) return;
             Nick = match.Groups[1].Value;
@@ -44,6 +47,7 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string nick, string realname, string ident, string hostname = "")
         {
+            ranks.Add(UserRank.None);
             Nick = nick;
             RealName = realname;
             Ident = ident;
@@ -52,8 +56,27 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string nick, UserRank rank)
         {
+            ranks.Add(UserRank.None);
             Nick = nick;
-            Rank = rank;
+            ranks.Add(rank);
+        }
+
+        public void AddRank(Client client, UserRank rank)
+        {
+            if (!ranks.Contains(rank))
+            {
+                ranks.Add(rank);
+                client.OnRankChange(this, Rank);
+            }
+        }
+
+        public void RemoveRank(Client client, UserRank rank)
+        {
+            if (ranks.Contains(rank))
+            {
+                ranks.Remove(rank);
+                client.OnRankChange(this, Rank);
+            }
         }
 
         public void AddMode(Client client, char mode)

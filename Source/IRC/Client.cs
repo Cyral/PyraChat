@@ -192,6 +192,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void AwayChangeEventHandler(User user, bool away);
 
+        public delegate void RankChangeEventHandler(User user, UserRank rank);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -218,6 +220,7 @@ namespace Pyratron.PyraChat.IRC
         public event QuitEventHandler Quit;
         public event UserModeEventHandler UserMode;
         public event AwayChangeEventHandler AwayChange;
+        public event RankChangeEventHandler RankChange;
 
         /// <summary>
         /// General output logging message.
@@ -246,6 +249,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnQuit(QuitMessage message) => Quit?.Invoke(message);
         internal void OnUserMode(UserModeMessage message) => UserMode?.Invoke(message);
         internal void OnAwayChange(User user, bool away) => AwayChange?.Invoke(user, away);
+        internal void OnRankChange(User user, UserRank rank) => RankChange?.Invoke(user, rank);
 
         #endregion //Events
     }

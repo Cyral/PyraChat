@@ -75,6 +75,10 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 {
                     SortUsers();
                 };
+                irc.RankChange += (user, rank) =>
+                {
+                    SortUsers();
+                };
                 irc.ChannelJoin += message =>
                 {
                     ChannelText += "Talking in " + message.Channel.Name + Environment.NewLine;

@@ -24,11 +24,9 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
                     var rank = UserRank.FromPrefix(user[0]);
                     var chanUser = msg.Client.UserFromNick(user);
                     if (chanUser == null) //Add new users discovered in response.
-                    {
                         Channel.AddUser(new User(rank != UserRank.None ? user.Substring(1) : user, rank));
-                    }
                     else //Update ranks of existing users (ourselves).
-                        chanUser.Rank = rank;
+                        chanUser.AddRank(msg.Client, rank);
                 }
                 msg.Client.OnReplyNames(this);
             }
