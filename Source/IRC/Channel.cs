@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
+using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -14,12 +16,11 @@ namespace Pyratron.PyraChat.IRC
         public string Name { get; private set; }
 
         public string Mode { get; private set; }
-        public string Topic { get; private set; }
+        public ChannelTopic Topic { get; private set; } = new ChannelTopic();
         public ChannelType Type { get; }
         public Client Client { get; private set; }
         public IEnumerable<User> Users => Client.Users.Where(user => user.Channels != null && user.Channels.Contains(this));
         
-
         public Channel(Client client, string name)
         {
             Client = client;
@@ -54,6 +55,8 @@ namespace Pyratron.PyraChat.IRC
         public delegate void UserAddEventHandler(User user);
         public delegate void UserPartEventHandler(PartMessage message);
         public delegate void UserRemoveEventHandler(User user);
+        public delegate void TopicEventHandler(TopicMessage message);
+        public delegate void TopicWhoTimeEventHandler(TopicWhoTimeMessage message);
 
         public event NoticeEventHandler Notice;
         public event MessageEventHandler Message;
@@ -61,6 +64,8 @@ namespace Pyratron.PyraChat.IRC
         public event UserAddEventHandler UserAdd;
         public event UserPartEventHandler UserPart;
         public event UserRemoveEventHandler UserRemove;
+        public event TopicEventHandler TopicChange;
+        public event TopicWhoTimeEventHandler TopicWhoTime;
 
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
@@ -68,6 +73,8 @@ namespace Pyratron.PyraChat.IRC
         internal void OnUserPart(PartMessage message) => UserPart?.Invoke(message);
         internal void OnUserAdd(User user) => UserAdd?.Invoke(user);
         internal void OnUserRemove(User user) => UserRemove?.Invoke(user);
+        internal void OnTopicChange(TopicMessage message) => TopicChange?.Invoke(message);
+        internal void OnTopicWhoTime(TopicWhoTimeMessage message) => TopicWhoTime?.Invoke(message);
 
         #endregion //Events
     }

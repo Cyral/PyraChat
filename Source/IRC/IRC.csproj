@@ -44,6 +44,7 @@
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelType.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Messages\ChannelTopic.cs" />
     <Compile Include="Messages\Receive\JoinMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\NamesMessage.cs" />
@@ -54,6 +55,8 @@
     <Compile Include="Messages\Receive\Numerics\CreatedMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MyInfoMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\BounceMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\TopicMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\TopicWhoTimeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WelcomeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Messages\Send\NickMessage.cs" />
     <Compile Include="Messages\Send\PrivateMessage.cs" />
     <Compile Include="Messages\Send\QuitMessage.cs" />
+    <Compile Include="Messages\Send\TopicMessage.cs" />
     <Compile Include="Messages\Send\UserMessage.cs" />
     <Compile Include="Messages\Send\UserModeMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
