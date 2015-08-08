@@ -109,6 +109,8 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (EndOfNamesMessage.CanProcess(this)) return new EndOfNamesMessage(this);
             if (TopicMessage.CanProcess(this)) return new TopicMessage(this);
             if (TopicWhoTimeMessage.CanProcess(this)) return new TopicWhoTimeMessage(this);
+            if (ListMessage.CanProcess(this)) return new ListMessage(this);
+            if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;
