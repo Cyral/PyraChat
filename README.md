@@ -11,10 +11,10 @@ PyraChat is built on our own IRC framework using .NET. It can be utilized in you
 
 ````
 var irc = new Client("irc.example.com", 6667, new User("Nick", "Real Name", "Ident"));
-irc.IRCMessage += message => Console.WriteLine(message.Text)
+irc.IRCMessage += message => Console.WriteLine(message.Text);
 irc.Connect += () =>
 {
-  irc.Send(new JoinMessage("#pyrachat-example"));
-  irc.Send(new PrivateMessage("#pyrachat-example", "Hello World!"));
+    irc.Send(new JoinMessage("#pyrachat-example"));
+    irc.Send(new PrivateMessage("#pyrachat-example", "Hello World!"));
 };
 ````
