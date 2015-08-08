@@ -55,7 +55,7 @@
     <Compile Include="Messages\Receive\Numerics\ListEndMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\NamesMessage.cs" />
-    <Compile Include="Messages\Receive\Numerics\LUserClientMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\LUserMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDEndMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\MOTDStartMessage.cs" />
@@ -82,6 +82,8 @@
     <Compile Include="Messages\Send\JoinMessage.cs" />
     <Compile Include="Messages\Send\KickMessage.cs" />
     <Compile Include="Messages\Send\ListMessage.cs" />
+    <Compile Include="Messages\Send\LUsersMessage.cs" />
+    <Compile Include="Messages\Send\MOTDMessage.cs" />
     <Compile Include="Messages\Send\OperMessage.cs" />
     <Compile Include="Messages\Send\PartMessage.cs" />
     <Compile Include="Messages\Send\PassMessage.cs" />

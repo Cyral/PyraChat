@@ -3,19 +3,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
-using Pyratron.PyraChat.IRC.Messages.Send;
-using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
-using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
-using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
-using KickMessage = Pyratron.PyraChat.IRC.Messages.Receive.KickMessage;
-using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
-using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
-using PartMessage = Pyratron.PyraChat.IRC.Messages.Receive.PartMessage;
-using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
-using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
-using ChannelModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.ChannelModeMessage;
-using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
-using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
 
 namespace Pyratron.PyraChat.IRC.Messages
 {
@@ -114,7 +101,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (MOTDEndMessage.CanProcess(this)) return new MOTDEndMessage(this);
             if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
             if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
-            if (LUserClientMessage.CanProcess(this)) return new LUserClientMessage(this);
+            if (LUserMessage.CanProcess(this)) return new LUserMessage(this);
             if (NamesMessage.CanProcess(this)) return new NamesMessage(this);
             if (EndOfNamesMessage.CanProcess(this)) return new EndOfNamesMessage(this);
             if (TopicMessage.CanProcess(this)) return new TopicMessage(this);

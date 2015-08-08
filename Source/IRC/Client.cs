@@ -13,6 +13,7 @@ using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
 using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
+using MOTDMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.MOTDMessage;
 using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
 using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
@@ -176,7 +177,7 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyMOTDEventHandler(MOTDMessage message);
 
-        public delegate void ReplyLUserClientEventHandler(LUserClientMessage message);
+        public delegate void ReplyLUserEventHandler(LUserMessage message);
 
         public delegate void ReplyNamesEventHandler(NamesMessage message);
 
@@ -243,7 +244,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyMOTDEndEventHandler ReplyMOTDEnd;
         public event ReplyMOTDStartEventHandler ReplyMOTDStart;
         public event ReplyMOTDEventHandler ReplyMOTD;
-        public event ReplyLUserClientEventHandler ReplyLUserClient;
+        public event ReplyLUserEventHandler ReplyLUser;
         public event ReplyNamesEventHandler ReplyNames;
         public event ReplyEndOfNamesEventHandler ReplyEndOfNames;
         public event ChannelJoinEventHandler ChannelJoin;
@@ -281,7 +282,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyMOTDEnd(MOTDEndMessage message) => ReplyMOTDEnd?.Invoke(message);
         internal void OnReplyMOTDStart(MOTDStartMessage message) => ReplyMOTDStart?.Invoke(message);
         internal void OnReplyMOTD(MOTDMessage message) => ReplyMOTD?.Invoke(message);
-        internal void OnReplyLUserClient(LUserClientMessage message) => ReplyLUserClient?.Invoke(message);
+        internal void OnReplyLUser(LUserMessage message) => ReplyLUser?.Invoke(message);
         internal void OnReplyNames(NamesMessage message) => ReplyNames?.Invoke(message);
         internal void OnReplyEndOfNames(EndOfNamesMessage message) => ReplyEndOfNames?.Invoke(message);
         internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
