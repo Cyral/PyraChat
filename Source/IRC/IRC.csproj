@@ -51,6 +51,8 @@
     <Compile Include="Messages\Receive\KickMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\AwayMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\EndOfWho.cs" />
+    <Compile Include="Messages\Receive\Numerics\EndOfWhois.cs" />
     <Compile Include="Messages\Receive\Numerics\NumericMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ErrorMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListEndMessage.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Messages\Receive\Numerics\VersionMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WelcomeMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\SupportMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\WhoisMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\WhoMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\YourHostMessage.cs" />
     <Compile Include="Messages\Receive\NickMessage.cs" />
@@ -104,6 +107,7 @@
     <Compile Include="Messages\Send\TopicMessage.cs" />
     <Compile Include="Messages\Send\UserMessage.cs" />
     <Compile Include="Messages\Send\UserModeMessage.cs" />
+    <Compile Include="Messages\Send\WhoisMessage.cs" />
     <Compile Include="Messages\Send\WhoMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />

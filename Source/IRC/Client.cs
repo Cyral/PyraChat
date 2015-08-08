@@ -211,6 +211,12 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyWhoEventHandler(WhoMessage message);
 
+        public delegate void ReplyWhoisEventHandler(WhoisMessage message);
+
+        public delegate void ReplyEndOfWhoEventHandler(EndOfWhoMessage message);
+
+        public delegate void ReplyEndOfWhoisEventHandler(EndOfWhoisMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -262,6 +268,9 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyVersionEventHandler ReplyVersion;
         public event ReplyTimeEventHandler ReplyTime;
         public event ReplyWhoEventHandler ReplyWho;
+        public event ReplyWhoisEventHandler ReplyWhois;
+        public event ReplyEndOfWhoEventHandler ReplyEndOfWho;
+        public event ReplyEndOfWhoisEventHandler ReplyEndOfWhois;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -314,6 +323,9 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyVersion(VersionMessage message) => ReplyVersion?.Invoke(message);
         internal void OnReplyTime(TimeMessage message) => ReplyTime?.Invoke(message);
         internal void OnReplyWho(WhoMessage message) => ReplyWho?.Invoke(message);
+        internal void OnReplyWhois(WhoisMessage message) => ReplyWhois?.Invoke(message);
+        internal void OnReplyEndOfWho(EndOfWhoMessage message) => ReplyEndOfWho?.Invoke(message);
+        internal void OnReplyEndOfWhois(EndOfWhoisMessage message) => ReplyEndOfWhois?.Invoke(message);
 
         #endregion //Events
     }
