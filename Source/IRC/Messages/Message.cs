@@ -81,6 +81,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         public ReceivableMessage Process()
         {
             if (NickMessage.CanProcess(this)) return new NickMessage(this);
+            if (QuitMessage.CanProcess(this)) return new QuitMessage(this);
             if (JoinMessage.CanProcess(this)) return new JoinMessage(this);
             if (PartMessage.CanProcess(this)) return new PartMessage(this);
             if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);

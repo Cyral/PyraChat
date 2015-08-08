@@ -17,7 +17,7 @@ namespace Pyratron.PyraChat.IRC
         public string Topic { get; private set; }
         public ChannelType Type { get; }
         public Client Client { get; private set; }
-        public IEnumerable<User> Users => Client.Users.Where(user => user.Channel != null && user.Channel == this);
+        public IEnumerable<User> Users => Client.Users.Where(user => user.Channels != null && user.Channels.Contains(this));
         
 
         public Channel(Client client, string name)
@@ -32,7 +32,7 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public void AddUser(User user)
         {
-            user.Channel = this;
+            user.Channels.Add(this);
             if (!Client.Users.Contains(user))
                 Client.Users.Add(user);
             OnUserAdd(user);
@@ -41,7 +41,7 @@ namespace Pyratron.PyraChat.IRC
 
         public void RemoveUser(User user)
         {
-            user.Channel = null;
+            user.Channels.Remove(this);
             Client.Users.Remove(user);
             OnUserRemove(user);
         }

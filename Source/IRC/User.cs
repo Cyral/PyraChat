@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -21,7 +22,7 @@ namespace Pyratron.PyraChat.IRC
 
         public string Host { get; internal set; }
         public string Mode { get; private set; }
-        public Channel Channel { get; internal set; }
+        public List<Channel> Channels { get; internal set; } = new List<Channel>();
         public UserRank Rank { get; set; } = UserRank.None;
 
         internal static Regex MaskRegex { get; } =

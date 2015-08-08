@@ -12,6 +12,7 @@ using Pyratron.PyraChat.IRC.Messages.Send;
 using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
+using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -184,6 +185,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void NickEventHandler(NickMessage message);
 
+        public delegate void QuitEventHandler(QuitMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -207,6 +210,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyEndOfNamesEventHandler ReplyEndOfNames;
         public event ChannelJoinEventHandler ChannelJoin;
         public event NickEventHandler Nick;
+        public event QuitEventHandler Quit;
 
         /// <summary>
         /// General output logging message.
@@ -232,6 +236,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyEndOfNames(EndOfNamesMessage message) => ReplyEndOfNames?.Invoke(message);
         internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
         internal void OnNick(NickMessage message) => Nick?.Invoke(message);
+        internal void OnQuit(QuitMessage message) => Quit?.Invoke(message);
 
         #endregion //Events
     }

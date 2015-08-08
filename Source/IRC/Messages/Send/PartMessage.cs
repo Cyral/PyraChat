@@ -10,19 +10,25 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
     {
         public string[] Channels { get; }
 
-        public PartMessage(string channel)
+        public string Reason { get; }
+
+        public PartMessage(string channel, string reason = "")
         {
+            Reason = reason;
             Channels = new[] {channel};
         }
 
-        public PartMessage(string[] channels)
+        public PartMessage(string[] channels, string reason = "")
         {
+            Reason = reason;
             Channels = channels;
         }
 
         public void Send(StreamWriter writer, Client client)
         {
-            writer.WriteLine($"PART {string.Join(",", Channels)}");
+            writer.WriteLine(string.IsNullOrWhiteSpace(Reason)
+                ? $"PART {string.Join(",", Channels)}"
+                : $"PART {string.Join(",", Channels)} :{Reason}");
         }
     }
 }
