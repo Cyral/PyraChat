@@ -92,32 +92,39 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (InviteMessage.CanProcess(this)) return new InviteMessage(this);
 
             // Numerics.
-            if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
-            if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);
-            if (CreatedMessage.CanProcess(this)) return new CreatedMessage(this);
-            if (MyInfoMessage.CanProcess(this)) return new MyInfoMessage(this);
-            if (SupportMessage.CanProcess(this)) return new SupportMessage(this);
-            if (BounceMessage.CanProcess(this)) return new BounceMessage(this);
-            if (MOTDEndMessage.CanProcess(this)) return new MOTDEndMessage(this);
-            if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
-            if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
-            if (LUserMessage.CanProcess(this)) return new LUserMessage(this);
-            if (NamesMessage.CanProcess(this)) return new NamesMessage(this);
-            if (EndOfNamesMessage.CanProcess(this)) return new EndOfNamesMessage(this);
-            if (TopicMessage.CanProcess(this)) return new TopicMessage(this);
-            if (TopicWhoTimeMessage.CanProcess(this)) return new TopicWhoTimeMessage(this);
-            if (ListMessage.CanProcess(this)) return new ListMessage(this);
-            if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
-            if (YoureOperMessage.CanProcess(this)) return new YoureOperMessage(this);
-            if (AwayMessage.CanProcess(this)) return new AwayMessage(this);
-            if (UnAwayMessage.CanProcess(this)) return new UnAwayMessage(this);
-            if (NowAwayMessage.CanProcess(this)) return new NowAwayMessage(this);
-            if (UModeIsMessage.CanProcess(this)) return new UModeIsMessage(this);
-            if (VersionMessage.CanProcess(this)) return new VersionMessage(this);
-            if (TimeMessage.CanProcess(this)) return new TimeMessage(this);
+            if (NumericMessage.CanProcess(this))
+            {
+                // Pass all numeric messages to NumericMessage so an event can be fired, then pass it to more specific instances.
+                // ReSharper disable once ObjectCreationAsStatement
+                new NumericMessage(this);
 
-            // Catch all for unhandled error messages.
-            if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);
+                if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
+                if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);
+                if (CreatedMessage.CanProcess(this)) return new CreatedMessage(this);
+                if (MyInfoMessage.CanProcess(this)) return new MyInfoMessage(this);
+                if (SupportMessage.CanProcess(this)) return new SupportMessage(this);
+                if (BounceMessage.CanProcess(this)) return new BounceMessage(this);
+                if (MOTDEndMessage.CanProcess(this)) return new MOTDEndMessage(this);
+                if (MOTDStartMessage.CanProcess(this)) return new MOTDStartMessage(this);
+                if (MOTDMessage.CanProcess(this)) return new MOTDMessage(this);
+                if (LUserMessage.CanProcess(this)) return new LUserMessage(this);
+                if (NamesMessage.CanProcess(this)) return new NamesMessage(this);
+                if (EndOfNamesMessage.CanProcess(this)) return new EndOfNamesMessage(this);
+                if (TopicMessage.CanProcess(this)) return new TopicMessage(this);
+                if (TopicWhoTimeMessage.CanProcess(this)) return new TopicWhoTimeMessage(this);
+                if (ListMessage.CanProcess(this)) return new ListMessage(this);
+                if (ListEndMessage.CanProcess(this)) return new ListEndMessage(this);
+                if (YoureOperMessage.CanProcess(this)) return new YoureOperMessage(this);
+                if (AwayMessage.CanProcess(this)) return new AwayMessage(this);
+                if (UnAwayMessage.CanProcess(this)) return new UnAwayMessage(this);
+                if (NowAwayMessage.CanProcess(this)) return new NowAwayMessage(this);
+                if (UModeIsMessage.CanProcess(this)) return new UModeIsMessage(this);
+                if (VersionMessage.CanProcess(this)) return new VersionMessage(this);
+                if (TimeMessage.CanProcess(this)) return new TimeMessage(this);
+
+                // Catch all for unhandled error messages.
+                if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);
+            }
 
             Console.WriteLine("Message handler for \"" + Text + "\" not found.");
             return null;

@@ -197,6 +197,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ErrorEventHandler(ErrorMessage message);
 
+        public delegate void NumericEventHandler(NumericMessage message);
+
         public delegate void ReplyAwayEventHandler(AwayMessage message);
 
         public delegate void ReplyUnAwayEventHandler(UnAwayMessage message);
@@ -261,7 +263,16 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// When an error message (400-599) is received.
         /// </summary>
-        public event ErrorEventHandler Error;
+        public event ErrorEventHandler ErrorMessage;
+
+
+        /// <summary>
+        /// When any numeric message (0-399) is received.
+        /// </summary>
+        /// <remarks>
+        /// Some numeric messages also have their own Reply____ handlers.
+        /// </remarks>
+        public event NumericEventHandler NumericMessage;
 
         internal void OnIRCMessage(Message message) => IRCMessage?.Invoke(message);
 
@@ -292,7 +303,8 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyListEnd(ListEndMessage message) => ReplyListEnd?.Invoke(message);
         internal void OnReplyUModeIs(UModeIsMessage message) => ReplyUModeIs?.Invoke(message);
         internal void OnReplyYoureOper(YoureOperMessage message) => ReplyYoureOper?.Invoke(message);
-        internal void OnError(ErrorMessage message) => Error?.Invoke(message);
+        internal void OnError(ErrorMessage message) => ErrorMessage?.Invoke(message);
+        internal void OnNumeric(NumericMessage message) => NumericMessage?.Invoke(message);
         internal void OnReplyAway(AwayMessage message) => ReplyAway?.Invoke(message);
         internal void OnReplyUnAway(UnAwayMessage message) => ReplyUnAway?.Invoke(message);
         internal void OnReplyNowAway(NowAwayMessage message) => ReplyNowAway?.Invoke(message);

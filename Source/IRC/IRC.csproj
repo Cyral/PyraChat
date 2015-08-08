@@ -51,6 +51,7 @@
     <Compile Include="Messages\Receive\KickMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\AwayMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\NumericMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ErrorMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListEndMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListMessage.cs" />
