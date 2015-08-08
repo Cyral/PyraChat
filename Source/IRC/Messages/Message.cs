@@ -87,6 +87,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (PrivateMessage.CanProcess(this)) return new PrivateMessage(this);
             if (PingMessage.CanProcess(this)) return new PingMessage(this);
             if (NoticeMessage.CanProcess(this)) return new NoticeMessage(this);
+            if (UserModeMessage.CanProcess(this)) return new UserModeMessage(this);
 
             if (WelcomeMessage.CanProcess(this)) return new WelcomeMessage(this);
             if (YourHostMessage.CanProcess(this)) return new YourHostMessage(this);

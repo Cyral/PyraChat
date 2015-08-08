@@ -21,9 +21,14 @@ namespace Pyratron.PyraChat.IRC
         public string Ident { get; internal set; }
 
         public string Host { get; internal set; }
-        public string Mode { get; private set; }
+        public List<char> Modes { get; private set; } = new List<char>();
         public List<Channel> Channels { get; internal set; } = new List<Channel>();
         public UserRank Rank { get; set; } = UserRank.None;
+
+        public bool IsAway => Modes.Contains('a');
+        public bool IsInvisible => Modes.Contains('i');
+        public bool IsRestricted => Modes.Contains('r');
+        public bool IsOperator => Modes.Contains('o');
 
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
@@ -49,6 +54,26 @@ namespace Pyratron.PyraChat.IRC
         {
             Nick = nick;
             Rank = rank;
+        }
+
+        public void AddMode(Client client, char mode)
+        {
+            if (!Modes.Contains(mode))
+                Modes.Add(mode);
+
+            // Invoke events
+            if (mode.Equals('a'))
+                client.OnAwayChange(this, true);
+        }
+
+        public void RemoveMode(Client client, char mode)
+        {
+            if (Modes.Contains(mode))
+                Modes.Remove(mode);
+
+            // Invoke events
+            if (mode.Equals('a'))
+                client.OnAwayChange(this, false);
         }
     }
 }

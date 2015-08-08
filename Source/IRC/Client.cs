@@ -13,6 +13,7 @@ using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
 using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
 using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
 using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
+using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -187,6 +188,10 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void QuitEventHandler(QuitMessage message);
 
+        public delegate void UserModeEventHandler(UserModeMessage message);
+
+        public delegate void AwayChangeEventHandler(User user, bool away);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -211,6 +216,8 @@ namespace Pyratron.PyraChat.IRC
         public event ChannelJoinEventHandler ChannelJoin;
         public event NickEventHandler Nick;
         public event QuitEventHandler Quit;
+        public event UserModeEventHandler UserMode;
+        public event AwayChangeEventHandler AwayChange;
 
         /// <summary>
         /// General output logging message.
@@ -237,6 +244,8 @@ namespace Pyratron.PyraChat.IRC
         internal void OnChannelJoin(JoinMessage message) => ChannelJoin?.Invoke(message);
         internal void OnNick(NickMessage message) => Nick?.Invoke(message);
         internal void OnQuit(QuitMessage message) => Quit?.Invoke(message);
+        internal void OnUserMode(UserModeMessage message) => UserMode?.Invoke(message);
+        internal void OnAwayChange(User user, bool away) => AwayChange?.Invoke(user, away);
 
         #endregion //Events
     }
