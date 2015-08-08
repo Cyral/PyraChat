@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Pyratron.PyraChat.IRC.Messages.Send;
 
 namespace Pyratron.PyraChat.IRC.Messages.Receive
 {
@@ -27,6 +28,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
             {
                 msg.Client.OnChannelJoin(this);
                 msg.Channel.AddUser(User);
+                msg.Client.Send(new WhoMessage(Channel.Name)); //Request information about users in this channel, such as away status.
             }
             else
             {

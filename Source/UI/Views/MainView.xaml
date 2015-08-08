@@ -93,7 +93,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock><Run Text="{Binding Nick, Mode=OneWay}" />
-                        <TextBlock Text="{Binding AwayMessage, Mode=OneWay, StringFormat={}({0})}" Foreground="Gray" FontStyle="Italic">
+                        <TextBlock Text="{Binding AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}" Foreground="Gray" FontStyle="Italic">
                             <TextBlock.Style>
                                 <Style>
                                     <Setter Property="TextBlock.Visibility" Value="Visible"/>

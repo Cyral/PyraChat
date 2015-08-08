@@ -28,7 +28,12 @@ namespace Pyratron.PyraChat.IRC
         public bool IsInvisible => Modes.Contains('i');
         public bool IsRestricted => Modes.Contains('r');
         public bool IsOperator => Modes.Contains('o') || IsOp;
-        public string AwayMessage { get; private set; }
+
+        public string AwayMessage
+        {
+            get { return string.IsNullOrWhiteSpace(awayMessage) ? "Away" : awayMessage; }
+            private set { awayMessage = value; }
+        }
 
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
@@ -36,6 +41,7 @@ namespace Pyratron.PyraChat.IRC
         private readonly Dictionary<string, List<UserRank>> ranks = new Dictionary<string, List<UserRank>>();
         private bool isAway;
         internal bool IsOp;
+        private string awayMessage;
 
         public User(string mask)
         {
