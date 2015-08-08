@@ -300,6 +300,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void InviteChangeEventHandler(string mask, bool isInvited);
 
+        public delegate void KickEventHandler(KickMessage message);
+
         public event NoticeEventHandler Notice;
         public event MessageEventHandler Message;
         public event UserJoinEventHandler UserJoin;
@@ -312,6 +314,7 @@ namespace Pyratron.PyraChat.IRC
         public event BanChangeEventHandler BanChange;
         public event ExceptionChangeEventHandler ExceptionChange;
         public event InviteChangeEventHandler InviteChange;
+        public event KickEventHandler Kick;
 
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
@@ -325,6 +328,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnBanChange(string mask, bool isBanned) => BanChange?.Invoke(mask, isBanned);
         internal void OnExceptionChange(string mask, bool isException) => ExceptionChange?.Invoke(mask, isException);
         internal void OnInviteChange(string mask, bool isInvited) => BanChange?.Invoke(mask, isInvited);
+        internal void OnKick(KickMessage message) => Kick?.Invoke(message);
 
         #endregion //Events
     }

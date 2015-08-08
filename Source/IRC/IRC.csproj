@@ -47,6 +47,7 @@
     <Compile Include="Messages\Receive\ChannelModeMessage.cs" />
     <Compile Include="Messages\ChannelTopic.cs" />
     <Compile Include="Messages\Receive\JoinMessage.cs" />
+    <Compile Include="Messages\Receive\KickMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\NamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\LUserClientMessage.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Messages\Receive\UserModeMessage.cs" />
     <Compile Include="Messages\Send\ChannelModeMessage.cs" />
     <Compile Include="Messages\Send\JoinMessage.cs" />
+    <Compile Include="Messages\Send\KickMessage.cs" />
     <Compile Include="Messages\Send\OperMessage.cs" />
     <Compile Include="Messages\Send\PartMessage.cs" />
     <Compile Include="Messages\Send\PassMessage.cs" />
