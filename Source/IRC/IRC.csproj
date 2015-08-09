@@ -96,6 +96,7 @@
     <Compile Include="Messages\Send\JoinMessage.cs" />
     <Compile Include="Messages\Send\KickMessage.cs" />
     <Compile Include="Messages\Send\ListMessage.cs" />
+    <Compile Include="Messages\Send\OperwallMessage.cs" />
     <Compile Include="Messages\Send\TimeMessage.cs" />
     <Compile Include="Messages\Send\VersionMessage.cs" />
     <Compile Include="Messages\Send\LUsersMessage.cs" />
@@ -125,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Messages\Receive\Numerics\TimeMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Messages\Receive\OperwallMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

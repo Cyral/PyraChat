@@ -231,6 +231,8 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void ReplyIsOnEventHandler(IsOnMessage message);
 
+        public delegate void OperwallEventHandler(OperwallMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -292,6 +294,7 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyExceptListEventHandler ReplyExceptList;
         public event ReplyEndOfExceptListEventHandler ReplyEndOfExceptList;
         public event ReplyIsOnEventHandler ReplyIsOn;
+        public event OperwallEventHandler Operwall;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -354,6 +357,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyExceptList(ExceptListMessage message) => ReplyExceptList?.Invoke(message);
         internal void OnReplyEndOfExceptList(EndOfExceptListMessage message) => ReplyEndOfExceptList?.Invoke(message);
         internal void OnReplyIsOn(IsOnMessage message) => ReplyIsOn?.Invoke(message);
+        internal void OnOperwall(OperwallMessage message) => Operwall?.Invoke(message);
 
         #endregion //Events
     }

@@ -11,18 +11,15 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
         /// <summary>
         /// Message target, either a channel or a user.
         /// </summary>
-        public string Target { get; }
+        public string Target => BaseMessage.Destination;
 
         /// <summary>
         /// Message text.
         /// </summary>
-        public string Text { get; }
+        public string Text => BaseMessage.Parameters[1];
 
         public PrivateMessage(Message msg) : base(msg)
         {
-            Target = msg.Destination;
-            Text = msg.Parameters[1];
-
             if (msg.IsChannel)
                 msg.Channel.OnMessage(this);
             else

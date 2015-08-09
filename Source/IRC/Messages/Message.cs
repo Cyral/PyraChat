@@ -90,6 +90,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (ChannelModeMessage.CanProcess(this)) return new ChannelModeMessage(this);
             if (KickMessage.CanProcess(this)) return new KickMessage(this);
             if (InviteMessage.CanProcess(this)) return new InviteMessage(this);
+            if (OperwallMessage.CanProcess(this)) return new OperwallMessage(this);
 
             // Numerics.
             if (NumericMessage.CanProcess(this))
