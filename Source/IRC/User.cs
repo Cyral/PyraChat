@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -38,7 +39,7 @@ namespace Pyratron.PyraChat.IRC
         internal static Regex MaskRegex { get; } =
             new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
 
-        private readonly Dictionary<string, List<UserRank>> ranks = new Dictionary<string, List<UserRank>>();
+        private readonly ConcurrentDictionary<string, List<UserRank>> ranks = new ConcurrentDictionary<string, List<UserRank>>();
         private bool isAway;
         internal bool IsOp;
         private string awayMessage;
@@ -64,14 +65,14 @@ namespace Pyratron.PyraChat.IRC
         {
             Nick = nick;
             if (!ranks.ContainsKey(channel))
-                ranks.Add(channel, new List<UserRank>());
+                ranks.TryAdd(channel, new List<UserRank>());
             ranks[channel].Add(rank);
         }
 
         public void AddRank(Client client, string channel, UserRank rank)
         {
             if (!ranks.ContainsKey(channel))
-                ranks.Add(channel, new List<UserRank>());
+                ranks.TryAdd(channel, new List<UserRank>());
             if (!ranks[channel].Contains(rank))
             {
                 if (!ranks[channel].Contains(UserRank.None))
@@ -101,7 +102,7 @@ namespace Pyratron.PyraChat.IRC
         {
             if (!ranks.ContainsKey(channel))
             {
-                ranks.Add(channel, new List<UserRank>());
+                ranks.TryAdd(channel, new List<UserRank>());
                 ranks[channel].Add(UserRank.None);
             }
             return ranks[channel].Min();

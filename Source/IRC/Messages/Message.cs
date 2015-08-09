@@ -125,6 +125,12 @@ namespace Pyratron.PyraChat.IRC.Messages
                 if (WhoisMessage.CanProcess(this)) return new WhoisMessage(this);
                 if (EndOfWhoMessage.CanProcess(this)) return new EndOfWhoMessage(this);
                 if (EndOfWhoisMessage.CanProcess(this)) return new EndOfWhoisMessage(this);
+                if (BanListMessage.CanProcess(this)) return new BanListMessage(this);
+                if (EndOfBanListMessage.CanProcess(this)) return new EndOfBanListMessage(this);
+                if (InviteListMessage.CanProcess(this)) return new InviteListMessage(this);
+                if (EndOfInviteListMessage.CanProcess(this)) return new EndOfInviteListMessage(this);
+                if (ExceptListMessage.CanProcess(this)) return new ExceptListMessage(this);
+                if (EndOfExceptListMessage.CanProcess(this)) return new EndOfExceptListMessage(this);
 
                 // Catch all for unhandled error messages.
                 if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);

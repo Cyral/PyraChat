@@ -210,12 +210,24 @@ namespace Pyratron.PyraChat.IRC
         public delegate void ReplyTimeEventHandler(TimeMessage message);
 
         public delegate void ReplyWhoEventHandler(WhoMessage message);
-
+        
         public delegate void ReplyWhoisEventHandler(WhoisMessage message);
 
         public delegate void ReplyEndOfWhoEventHandler(EndOfWhoMessage message);
 
         public delegate void ReplyEndOfWhoisEventHandler(EndOfWhoisMessage message);
+
+        public delegate void ReplyBanListEventHandler(BanListMessage message);
+
+        public delegate void ReplyEndOfBanListEventHandler(EndOfBanListMessage message);
+
+        public delegate void ReplyExceptListEventHandler(ExceptListMessage message);
+
+        public delegate void ReplyEndOfExceptListEventHandler(EndOfExceptListMessage message);
+
+        public delegate void ReplyInviteListEventHandler(InviteListMessage message);
+
+        public delegate void ReplyEndOfInviteListEventHandler(EndOfInviteListMessage message);
 
         /// <summary>
         /// General output logging message.
@@ -271,6 +283,12 @@ namespace Pyratron.PyraChat.IRC
         public event ReplyWhoisEventHandler ReplyWhois;
         public event ReplyEndOfWhoEventHandler ReplyEndOfWho;
         public event ReplyEndOfWhoisEventHandler ReplyEndOfWhois;
+        public event ReplyBanListEventHandler ReplyBanList;
+        public event ReplyEndOfBanListEventHandler ReplyEndOfBanList;
+        public event ReplyInviteListEventHandler ReplyInviteList;
+        public event ReplyEndOfInviteListEventHandler ReplyEndOfInviteList;
+        public event ReplyExceptListEventHandler ReplyExceptList;
+        public event ReplyEndOfExceptListEventHandler ReplyEndOfExceptList;
 
         /// <summary>
         /// When an error message (400-599) is received.
@@ -326,6 +344,12 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyWhois(WhoisMessage message) => ReplyWhois?.Invoke(message);
         internal void OnReplyEndOfWho(EndOfWhoMessage message) => ReplyEndOfWho?.Invoke(message);
         internal void OnReplyEndOfWhois(EndOfWhoisMessage message) => ReplyEndOfWhois?.Invoke(message);
+        internal void OnReplyBanList(BanListMessage message) => ReplyBanList?.Invoke(message);
+        internal void OnReplyEndOfBanList(EndOfBanListMessage message) => ReplyEndOfBanList?.Invoke(message);
+        internal void OnReplyInviteList(InviteListMessage message) => ReplyInviteList?.Invoke(message);
+        internal void OnReplyEndOfInviteList(EndOfInviteListMessage message) => ReplyEndOfInviteList?.Invoke(message);
+        internal void OnReplyExceptList(ExceptListMessage message) => ReplyExceptList?.Invoke(message);
+        internal void OnReplyEndOfExceptList(EndOfExceptListMessage message) => ReplyEndOfExceptList?.Invoke(message);
 
         #endregion //Events
     }

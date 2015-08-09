@@ -133,29 +133,17 @@ namespace Pyratron.PyraChat.IRC
                 }
                 case 'b':
                 {
-                    if (!BanList.Contains(parameter))
-                    {
-                        BanList.Add(parameter);
-                        OnBanChange(parameter, false);
-                    }
+                    AddBan(parameter);
                     return 1;
                 }
                 case 'e':
                 {
-                    if (!ExceptionList.Contains(parameter))
-                    {
-                        ExceptionList.Add(parameter);
-                        OnExceptionChange(parameter, false);
-                    }
+                    AddException(parameter);
                     return 1;
                 }
                 case 'I':
                 {
-                    if (!InviteList.Contains(parameter))
-                    {
-                        InviteList.Add(parameter);
-                        OnInviteChange(parameter, false);
-                    }
+                    AddInvite(parameter);
                     return 1;
                 }
                 case 'k':
@@ -183,6 +171,33 @@ namespace Pyratron.PyraChat.IRC
                 }
             }
             return 0;
+        }
+
+        internal void AddInvite(string mask)
+        {
+            if (!InviteList.Contains(mask))
+            {
+                InviteList.Add(mask);
+                OnInviteChange(mask, false);
+            }
+        }
+
+        internal void AddBan(string mask)
+        {
+            if (!BanList.Contains(mask))
+            {
+                BanList.Add(mask);
+                OnBanChange(mask, false);
+            }
+        }
+
+        internal void AddException(string mask)
+        {
+            if (!ExceptionList.Contains(mask))
+            {
+                ExceptionList.Add(mask);
+                OnExceptionChange(mask, false);
+            }
         }
 
         public int RemoveMode(Client client, string channel, char mode, string parameter = "")
@@ -221,29 +236,17 @@ namespace Pyratron.PyraChat.IRC
                 }
                 case 'b':
                 {
-                    if (BanList.Contains(parameter))
-                    {
-                        BanList.Remove(parameter);
-                        OnBanChange(parameter, false);
-                    }
+                    RemoveBan(parameter);
                     return 1;
                 }
                 case 'e':
                 {
-                    if (ExceptionList.Contains(parameter))
-                    {
-                        ExceptionList.Remove(parameter);
-                        OnExceptionChange(parameter, false);
-                    }
+                    RemoveException(parameter);
                     return 1;
                 }
                 case 'I':
                 {
-                    if (InviteList.Contains(parameter))
-                    {
-                        InviteList.Remove(parameter);
-                        OnInviteChange(parameter, false);
-                    }
+                    RemoveInvite(parameter);
                     return 1;
                 }
                 case 'k':
@@ -271,6 +274,33 @@ namespace Pyratron.PyraChat.IRC
                 }
             }
             return 0;
+        }
+
+        private void RemoveInvite(string mask)
+        {
+            if (InviteList.Contains(mask))
+            {
+                InviteList.Remove(mask);
+                OnInviteChange(mask, false);
+            }
+        }
+
+        private void RemoveException(string mask)
+        {
+            if (ExceptionList.Contains(mask))
+            {
+                ExceptionList.Remove(mask);
+                OnExceptionChange(mask, false);
+            }
+        }
+
+        private void RemoveBan(string mask)
+        {
+            if (BanList.Contains(mask))
+            {
+                BanList.Remove(mask);
+                OnBanChange(mask, false);
+            }
         }
 
         #region Events
