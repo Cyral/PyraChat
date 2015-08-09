@@ -28,6 +28,16 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public User User { get; }
 
+        /// <summary>
+        /// Capabilities supported by the server.
+        /// </summary>
+        public List<Capability> SupportedCapabilities { get; } = new List<Capability>();
+
+        /// <summary>
+        /// Active capabilities. (Acknowledged by server)
+        /// </summary>
+        public List<Capability> ActiveCapabilities { get; } = new List<Capability>();
+
         public List<User> Users { get; }
         internal StringBuilder MOTDBuilder { get; set; } = new StringBuilder();
         public List<Channel> Channels { get; }
@@ -54,7 +64,14 @@ namespace Pyratron.PyraChat.IRC
             tcpClient = new TcpClient();
             networkThread = new Thread(ProcessMessages);
 
-            //Register neccessary internal events
+            // Register neccessary internal events
+            Connect += () =>
+            {
+                // Send IRCv3 capabilities.
+                Send(new Messages.Send.v3.CapabilityListSupportedMessage());
+                Send(new Messages.Send.v3.CapabilityRequestMessage(IRC.Capability.MultiPrefix, IRC.Capability.AwayNotify));
+                Send(new Messages.Send.v3.CapabilityEndMessage());
+            };
             Ping += message => Send(new Messages.Send.PongMessage(message.Extra));
         }
 
@@ -233,6 +250,10 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void OperwallEventHandler(OperwallMessage message);
 
+        public delegate void AwayEventHandler(Messages.Receive.v3.AwayMessage message);
+
+        public delegate void CapabilityEventHandler(Messages.Receive.v3.CapabilityMessage message);
+
         /// <summary>
         /// General output logging message.
         /// </summary>
@@ -271,7 +292,21 @@ namespace Pyratron.PyraChat.IRC
         public event NickEventHandler Nick;
         public event QuitEventHandler Quit;
         public event UserModeEventHandler UserMode;
+
+        /// <summary>
+        /// When an IRCv3 CAP message is received.
+        /// </summary>
+        public event CapabilityEventHandler Capability;
+
+        /// <summary>
+        /// When a user's away state is changed, through WHO, AWAY, etc.
+        /// </summary>
         public event AwayChangeEventHandler AwayChange;
+
+        /// <summary>
+        /// When an IRCv3 AWAY message is recieved.
+        /// </summary>
+        public event AwayEventHandler Away;
         public event RankChangeEventHandler RankChange;
         public event InviteEventHandler Invite;
         public event ReplyListEventHandler ReplyList;
@@ -341,6 +376,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyYoureOper(YoureOperMessage message) => ReplyYoureOper?.Invoke(message);
         internal void OnError(ErrorMessage message) => ErrorMessage?.Invoke(message);
         internal void OnNumeric(NumericMessage message) => NumericMessage?.Invoke(message);
+        internal void OnAway(Messages.Receive.v3.AwayMessage message) => Away?.Invoke(message);
         internal void OnReplyAway(AwayMessage message) => ReplyAway?.Invoke(message);
         internal void OnReplyUnAway(UnAwayMessage message) => ReplyUnAway?.Invoke(message);
         internal void OnReplyNowAway(NowAwayMessage message) => ReplyNowAway?.Invoke(message);
@@ -358,6 +394,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyEndOfExceptList(EndOfExceptListMessage message) => ReplyEndOfExceptList?.Invoke(message);
         internal void OnReplyIsOn(IsOnMessage message) => ReplyIsOn?.Invoke(message);
         internal void OnOperwall(OperwallMessage message) => Operwall?.Invoke(message);
+        internal void OnCapability(Messages.Receive.v3.CapabilityMessage message) => Capability?.Invoke(message);
 
         #endregion //Events
     }

@@ -92,6 +92,10 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (InviteMessage.CanProcess(this)) return new InviteMessage(this);
             if (OperwallMessage.CanProcess(this)) return new OperwallMessage(this);
 
+            // IRCv3 messages.
+            if (Receive.v3.CapabilityMessage.CanProcess(this)) return new Receive.v3.CapabilityMessage(this);
+            if (Receive.v3.AwayMessage.CanProcess(this)) return new Receive.v3.AwayMessage(this);
+
             // Numerics.
             if (NumericMessage.CanProcess(this))
             {

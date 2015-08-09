@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Capability.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelType.cs" />
     <Compile Include="Client.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Receive\QuitMessage.cs" />
     <Compile Include="Messages\Receive\UserModeMessage.cs" />
+    <Compile Include="Messages\Receive\v3\AwayMessage.cs" />
+    <Compile Include="Messages\Receive\v3\CapabilityMessage.cs" />
     <Compile Include="Messages\Send\AwayMessage.cs" />
     <Compile Include="Messages\Send\ChannelModeMessage.cs" />
     <Compile Include="Messages\Send\InviteMessage.cs" />
@@ -98,6 +101,10 @@
     <Compile Include="Messages\Send\ListMessage.cs" />
     <Compile Include="Messages\Send\OperwallMessage.cs" />
     <Compile Include="Messages\Send\TimeMessage.cs" />
+    <Compile Include="Messages\Send\v3\CapabilityListSupportedMessage.cs" />
+    <Compile Include="Messages\Send\v3\CapabilityListActiveMessage.cs" />
+    <Compile Include="Messages\Send\v3\CapabilityEndMessage.cs" />
+    <Compile Include="Messages\Send\v3\CapabilityRequestMessage.cs" />
     <Compile Include="Messages\Send\VersionMessage.cs" />
     <Compile Include="Messages\Send\LUsersMessage.cs" />
     <Compile Include="Messages\Send\MOTDMessage.cs" />
