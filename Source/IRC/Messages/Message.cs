@@ -131,6 +131,7 @@ namespace Pyratron.PyraChat.IRC.Messages
                 if (EndOfInviteListMessage.CanProcess(this)) return new EndOfInviteListMessage(this);
                 if (ExceptListMessage.CanProcess(this)) return new ExceptListMessage(this);
                 if (EndOfExceptListMessage.CanProcess(this)) return new EndOfExceptListMessage(this);
+                if (IsOnMessage.CanProcess(this)) return new IsOnMessage(this);
 
                 // Catch all for unhandled error messages.
                 if (ErrorMessage.CanProcess(this)) return new ErrorMessage(this);

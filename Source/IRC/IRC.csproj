@@ -59,6 +59,7 @@
     <Compile Include="Messages\Receive\Numerics\EndOfNamesMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfWho.cs" />
     <Compile Include="Messages\Receive\Numerics\EndOfWhois.cs" />
+    <Compile Include="Messages\Receive\Numerics\IsOnMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\NumericMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ErrorMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ListEndMessage.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Messages\Send\AwayMessage.cs" />
     <Compile Include="Messages\Send\ChannelModeMessage.cs" />
     <Compile Include="Messages\Send\InviteMessage.cs" />
+    <Compile Include="Messages\Send\IsOnMessage.cs" />
     <Compile Include="Messages\Send\JoinMessage.cs" />
     <Compile Include="Messages\Send\KickMessage.cs" />
     <Compile Include="Messages\Send\ListMessage.cs" />
