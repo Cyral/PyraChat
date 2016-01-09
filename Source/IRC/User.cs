@@ -75,6 +75,7 @@ namespace Pyratron.PyraChat.IRC
 
         public void AddRank(Client client, string channel, UserRank rank)
         {
+            Console.WriteLine($"Rank of {this} for {channel} on {client.Host} added: {rank}");
             if (!ranks.ContainsKey(channel))
                 ranks.TryAdd(channel, new List<UserRank>());
             if (!ranks[channel].Contains(rank))

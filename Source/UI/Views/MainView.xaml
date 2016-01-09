@@ -103,7 +103,7 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type models:Network}" ItemsSource="{Binding Channels}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Host}" />
+                        <TextBlock Text="{Binding Name}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type models:UiChannel}">
@@ -127,6 +127,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Padding="0" Margin="0">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="{Binding Color}" />
+                        </TextBlock.Foreground>
                         <TextBlock x:Name="Rank"
                                    Text="{Binding Rank, TargetNullValue={x:Static system:String.Empty}, Mode=OneWay}">
                             <TextBlock.Style>
@@ -140,9 +143,6 @@
                             </TextBlock.Style>
                         </TextBlock><!-- Make sure there are no spaces between here
                         --><Run Text="{Binding User.Nick, Mode=OneWay}">
-                            <Run.Foreground>
-                                <SolidColorBrush Color="{Binding Color}" />
-                            </Run.Foreground>
                         </Run>
                         <TextBlock
                             Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"

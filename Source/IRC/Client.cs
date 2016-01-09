@@ -100,7 +100,7 @@ namespace Pyratron.PyraChat.IRC
         /// <returns></returns>
         public Channel ChannelFromName(string name)
         {
-            var chan =  Channels.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var chan = Channels.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             return chan ?? new Channel(this, name);
         }
 

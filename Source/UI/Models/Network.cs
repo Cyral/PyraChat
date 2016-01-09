@@ -11,12 +11,12 @@ namespace Pyratron.PyraChat.UI.Models
 {
     public class Network : ObservableObject
     {
-        public string Host
+        public string Name
         {
-            get { return host; }
+            get { return name; }
             set
             {
-                host = value;
+                name = value;
                 RaisePropertyChanged();
             }
         }
@@ -56,13 +56,13 @@ namespace Pyratron.PyraChat.UI.Models
         internal UiUser Me { get; private set; }
 
         private ObservableCollection<UiChannel> channels;
-        private string host;
+        private string name;
 
         private ObservableCollection<UiUser> users, displayUsers;
 
         public Network(string host, int port, User userirc, string[] initialChannels)
         {
-            Host = host;
+            Name = host; // By default, name is host.
             Users = new ObservableCollection<UiUser>();
             DisplayUsers = new ObservableCollection<UiUser>();
             Channels = new ObservableCollection<UiChannel>();
@@ -74,6 +74,13 @@ namespace Pyratron.PyraChat.UI.Models
             {
                 foreach (var chan in initialChannels)
                     Client.Send(new JoinMessage(chan));
+            };
+            Client.ReplyISupport += message =>
+            {
+                // Use the NETWORK= parameter in 005 to set the server name.
+                string networkName;
+                if (message.TryGetParameter("Network", out networkName))
+                    Name = networkName;
             };
             Client.Nick += message => { SortUsers(); };
             Client.RankChange += (user, channel, rank) => { SortUsers(); };
@@ -87,15 +94,23 @@ namespace Pyratron.PyraChat.UI.Models
                 message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(
-                        () => { ViewModelLocator.Main.Channel.AddLine(privateMessage); });
+                    () =>
+                    {
+                        var chan = Channels.FirstOrDefault(c => c.Channel == message.Channel);
+                        chan?.AddLine(privateMessage);
+                    });
                 };
 
                 message.Channel.UserAdd += user =>
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
-                        Users.Add(new UiUser(user, ViewModelLocator.Main.GenColor()));
-                        SortUsers();
+                        //Don't add duplicate users to the master list.
+                        if (Users.All(u => u.User != user))
+                        {
+                            Users.Add(new UiUser(user, ViewModelLocator.Main.GenColor()));
+                            SortUsers();
+                        }
                     });
                 };
 
@@ -124,7 +139,6 @@ namespace Pyratron.PyraChat.UI.Models
             DisplayUsers =
                 new ObservableCollection<UiUser>(
                     Users.Where(u => u.User.Channels.Contains(ViewModelLocator.Main.Channel.Channel))
-                        .DistinctBy(u => u.User)
                         .OrderBy(u => u.Rank)
                         .ThenBy(u => u.User.Nick));
         }

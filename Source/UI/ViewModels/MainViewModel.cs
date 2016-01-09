@@ -80,19 +80,22 @@ namespace Pyratron.PyraChat.UI.ViewModels
         {
             Networks = new ObservableCollection<Network>();
             EnterCommand = new RelayCommand(OnEnter);
-            SelectedChannelCommand = new RelayCommand<UiChannel>(param => OnSelectedChannelChanged(param));
+            SelectedChannelCommand = new RelayCommand<UiChannel>(OnSelectedChannelChanged);
         }
 
         public void Connect()
         {
-            var user = new User("PyraChat", "PyraChat", "pyra");
-            Networks.Add(new Network("frogbox.es", 6667, user, new[]
+            Networks.Add(new Network("frogbox.es", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
                     //"#aenet",
                     //"#Pyratron",
                     "#Bricklayer",
                     "#pyratest",
-                }));
+            }));
+            Networks.Add(new Network("irc.quakenet.org", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
+            {
+                "#pyratest",
+            }));
             Network = Networks[0];
         }
 
@@ -112,6 +115,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
         private void OnSelectedChannelChanged(UiChannel channel)
         {
             Channel = channel;
+            Network = Channel.Network;
             Channel.Network.SortUsers();
         }
     }

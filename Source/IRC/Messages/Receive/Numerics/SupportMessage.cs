@@ -23,9 +23,21 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
                     break;
 
                 var param = msg.Parameters[i].Split('=');
-                Parameters.Add(param[0], param.Length == 1 ? null : param[1]);
+                Parameters.Add(param[0].ToUpper(), param.Length == 1 ? null : param[1]);
             }
             msg.Client.OnReplyISupport(this);
+        }
+
+        public bool TryGetParameter(string param, out string value)
+        {
+            param = param.ToUpper();
+            value = null;
+            if (Parameters.ContainsKey(param))
+            {
+                value = Parameters[param];
+                return true;
+            }
+            return false;
         }
 
         public static bool CanProcess(Message msg)
