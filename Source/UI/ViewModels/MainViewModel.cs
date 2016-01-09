@@ -45,9 +45,11 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        private UiChannel channel;
         private readonly Client irc;
+
+        private UiChannel channel;
         private string logText, channelText, chatLineText;
+        private readonly UiUser me;
         private ObservableCollection<UiUser> users;
 
         public MainViewModel(bool designTime)
@@ -55,35 +57,33 @@ namespace Pyratron.PyraChat.UI.ViewModels
             Users = new ObservableCollection<UiUser>();
             EnterCommand = new RelayCommand(OnEnter);
 
+            var joinChannels = new[]
+            {
+               // "#Pyratron",
+              //  "#Bricklayer",
+                "#pyratest",
+            };
+
             if (!designTime)
             {
-                irc = new Client("frogbox.es", 6667, new User("My_Name", "My Real Name", "Tester_T"));
+                var userirc = new User("My_Name", "My Real Name", "Tester_T");
+                me = new UiUser(userirc, GenColor());
+                irc = new Client("frogbox.es", 6667, userirc);
                 irc.IRCMessage += message => Console.WriteLine(message.Text);
                 irc.Connect += () =>
                 {
-                    irc.Send(new JoinMessage("#pyratest"));
+                    foreach (var chan in joinChannels)
+                        irc.Send(new JoinMessage(chan));
                 };
-                irc.Nick += message =>
-                {
-                    SortUsers();
-                };
-                irc.RankChange += (user, channel, rank) =>
-                {
-                    SortUsers();
-                };
-                irc.AwayChange += (user, away) =>
-                {
-                    SortUsers();
-                };
+                irc.Nick += message => { SortUsers(); };
+                irc.RankChange += (user, channel, rank) => { SortUsers(); };
+                irc.AwayChange += (user, away) => { SortUsers(); };
                 irc.ChannelJoin += message =>
                 {
                     Channel = new UiChannel(message.Channel);
                     message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
                     {
-                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                        {
-                            ViewModelLocator.Chat.AddLine(privateMessage);
-                        });
+                        DispatcherHelper.CheckBeginInvokeOnUI(() => { Channel.AddLine(privateMessage); });
                     };
 
                     message.Channel.UserAdd += user =>
@@ -99,7 +99,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                     {
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            Users.Remove(Users.FirstOrDefault(x=> x.User == user));
+                            Users.Remove(Users.FirstOrDefault(x => x.User == user));
                             SortUsers();
                         });
                     };
@@ -119,15 +119,19 @@ namespace Pyratron.PyraChat.UI.ViewModels
             return Colors.Red;
         }
 
-        private void SortUsers()
-        {
-            Users = new ObservableCollection<UiUser>(Users.OrderBy(u => u.User.GetRank(channel.Channel.Name)).ThenBy(u => u.User.Nick));
-        }
-
         private void OnEnter()
         {
-            irc.Send(new PrivateMessage("#pyratest", ChatLineText));
+            var msg = new PrivateMessage(Channel.Name, ChatLineText);
+            irc.Send(msg);
+            Channel.AddLine(msg, me);
             ChatLineText = string.Empty;
+        }
+
+        private void SortUsers()
+        {
+            Users =
+                new ObservableCollection<UiUser>(
+                    Users.Where(u => u.User.Channels.Contains(Channel.Channel)).OrderBy(u => u.User.GetRank(channel.Channel.Name)).ThenBy(u => u.User.Nick));
         }
     }
 }

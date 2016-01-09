@@ -46,8 +46,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// <summary>
         /// Returns the user who sent the message. If null, a new user is created from the mask.
         /// </summary>
-        public User User
-            => Client.UserFromMask(Prefix) ?? new User(Prefix);
+        public User User => Client.UserFromMask(Prefix);
 
         /// <summary>
         /// Message parameters.

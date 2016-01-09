@@ -8,6 +8,24 @@ using System.Threading;
 using Pyratron.PyraChat.IRC.Messages;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
+using Pyratron.PyraChat.IRC.Messages.Receive.v3;
+using Pyratron.PyraChat.IRC.Messages.Send;
+using Pyratron.PyraChat.IRC.Messages.Send.v3;
+using AwayMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.AwayMessage;
+using InviteMessage = Pyratron.PyraChat.IRC.Messages.Receive.InviteMessage;
+using IsOnMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.IsOnMessage;
+using JoinMessage = Pyratron.PyraChat.IRC.Messages.Receive.JoinMessage;
+using ListMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.ListMessage;
+using MOTDMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.MOTDMessage;
+using NickMessage = Pyratron.PyraChat.IRC.Messages.Receive.NickMessage;
+using OperwallMessage = Pyratron.PyraChat.IRC.Messages.Receive.OperwallMessage;
+using PrivateMessage = Pyratron.PyraChat.IRC.Messages.Receive.PrivateMessage;
+using QuitMessage = Pyratron.PyraChat.IRC.Messages.Receive.QuitMessage;
+using TimeMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TimeMessage;
+using UserModeMessage = Pyratron.PyraChat.IRC.Messages.Receive.UserModeMessage;
+using VersionMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.VersionMessage;
+using WhoisMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.WhoisMessage;
+using WhoMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.WhoMessage;
 
 namespace Pyratron.PyraChat.IRC
 {
@@ -56,7 +74,7 @@ namespace Pyratron.PyraChat.IRC
         public Client(string host, int port, User user)
         {
             Channels = new List<Channel>();
-            Users = new List<User>();
+            Users = new List<User> {user};
             Host = host;
             Port = port;
             User = user;
@@ -68,11 +86,30 @@ namespace Pyratron.PyraChat.IRC
             Connect += () =>
             {
                 // Send IRCv3 capabilities.
-                Send(new Messages.Send.v3.CapabilityListSupportedMessage());
-                Send(new Messages.Send.v3.CapabilityRequestMessage(IRC.Capability.MultiPrefix, IRC.Capability.AwayNotify));
-                Send(new Messages.Send.v3.CapabilityEndMessage());
+                Send(new CapabilityListSupportedMessage());
+                Send(new CapabilityRequestMessage(IRC.Capability.MultiPrefix, IRC.Capability.AwayNotify));
+                Send(new CapabilityEndMessage());
             };
-            Ping += message => Send(new Messages.Send.PongMessage(message.Extra));
+            Ping += message => Send(new PongMessage(message.Extra));
+        }
+
+        /// <summary>
+        /// Find a channel by name. If it doesn't exist, it will be created.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Channel ChannelFromName(string name)
+        {
+            var chan =  Channels.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return chan ?? new Channel(this, name);
+        }
+
+        /// <summary>
+        /// Sends the specified message.
+        /// </summary>
+        public void Send(SendableMessage message)
+        {
+            message.Send(writer, this);
         }
 
         /// <summary>
@@ -93,16 +130,42 @@ namespace Pyratron.PyraChat.IRC
             networkThread.Start();
 
             //Send user information
-            Send(new Messages.Send.UserMessage(User));
+            Send(new UserMessage(User));
             Send(new Messages.Send.NickMessage(User));
         }
 
         /// <summary>
-        /// Sends the specified message.
+        /// Returns the user that best matches the mask provided.
+        /// If any fields are blank in the user, they will be filled in with data from the mask.
+        /// If the user is not found, they will be created.
         /// </summary>
-        public void Send(SendableMessage message)
+        public User UserFromMask(string mask)
         {
-            message.Send(writer, this);
+            var match = User.MaskRegex.Match(mask);
+            if (!match.Success) return null;
+
+            var user = UserFromNick(match.Groups[1].Value);
+            if (user == null)
+            {
+                user = new User(mask);
+                Users.Add(user);
+            }
+            user.Nick = match.Groups[1].Value;
+            user.Ident = match.Groups[2].Value;
+            user.Host = match.Groups[3].Value;
+            return user;
+        }
+
+        /// <summary>
+        /// Returns the user whose nickname is equal to the value specified.
+        /// </summary>
+        public User UserFromNick(string nick)
+        {
+            //Remove rank from nick
+            var rank = UserRank.FromPrefix(nick[0]);
+            if (rank != UserRank.None)
+                nick = nick.Substring(1);
+            return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
         }
 
         private void ProcessMessages()
@@ -118,40 +181,6 @@ namespace Pyratron.PyraChat.IRC
                 msg.Process();
                 OnIRCMessage(msg);
             }
-        }
-
-        /// <summary>
-        /// Returns the user whose nickname is equal to the value specified.
-        /// </summary>
-        public User UserFromNick(string nick)
-        {
-            //Remove rank from nick
-            var rank = UserRank.FromPrefix(nick[0]);
-            if (rank != UserRank.None)
-                nick = nick.Substring(1);
-            return Users.FirstOrDefault(u => u.Nick.Equals(nick, StringComparison.OrdinalIgnoreCase));
-        }
-
-        /// <summary>
-        /// Returns the user that best matches the mask provided.
-        /// If any fields are blank in the user, they will be filled in with data from the mask.
-        /// </summary>
-        public User UserFromMask(string mask)
-        {
-            var match = User.MaskRegex.Match(mask);
-            if (!match.Success) return null;
-
-            var user = UserFromNick(match.Groups[1].Value);
-            if (user == null)
-                return null;
-            user.Ident = match.Groups[2].Value;
-            user.Host = match.Groups[3].Value;
-            return user;
-        }
-
-        public Channel ChannelFromName(string name)
-        {
-            return Channels.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         #region Events
@@ -227,7 +256,7 @@ namespace Pyratron.PyraChat.IRC
         public delegate void ReplyTimeEventHandler(TimeMessage message);
 
         public delegate void ReplyWhoEventHandler(WhoMessage message);
-        
+
         public delegate void ReplyWhoisEventHandler(WhoisMessage message);
 
         public delegate void ReplyEndOfWhoEventHandler(EndOfWhoMessage message);
@@ -252,7 +281,7 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void AwayEventHandler(Messages.Receive.v3.AwayMessage message);
 
-        public delegate void CapabilityEventHandler(Messages.Receive.v3.CapabilityMessage message);
+        public delegate void CapabilityEventHandler(CapabilityMessage message);
 
         /// <summary>
         /// General output logging message.
@@ -307,6 +336,7 @@ namespace Pyratron.PyraChat.IRC
         /// When an IRCv3 AWAY message is recieved.
         /// </summary>
         public event AwayEventHandler Away;
+
         public event RankChangeEventHandler RankChange;
         public event InviteEventHandler Invite;
         public event ReplyListEventHandler ReplyList;
@@ -394,7 +424,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnReplyEndOfExceptList(EndOfExceptListMessage message) => ReplyEndOfExceptList?.Invoke(message);
         internal void OnReplyIsOn(IsOnMessage message) => ReplyIsOn?.Invoke(message);
         internal void OnOperwall(OperwallMessage message) => Operwall?.Invoke(message);
-        internal void OnCapability(Messages.Receive.v3.CapabilityMessage message) => Capability?.Invoke(message);
+        internal void OnCapability(CapabilityMessage message) => Capability?.Invoke(message);
 
         #endregion //Events
     }

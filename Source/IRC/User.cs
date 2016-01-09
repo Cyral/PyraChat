@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,7 +40,7 @@ namespace Pyratron.PyraChat.IRC
         }
 
         internal static Regex MaskRegex { get; } =
-            new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)!([a-z0-9_\-\~]+)\@([a-z0-9\.\-]+)", RegexOptions.IgnoreCase);
+            new Regex(@"([a-z0-9_\-\[\]\\`|^{}]+)(?:!([a-z0-9_\-\~]*)\@([a-z0-9\.\-]*))?", RegexOptions.IgnoreCase);
 
         private readonly ConcurrentDictionary<string, List<UserRank>> ranks = new ConcurrentDictionary<string, List<UserRank>>();
         private bool isAway;
@@ -48,6 +49,7 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string mask)
         {
+            Console.WriteLine($"User created from mask: {mask}");
             var match = MaskRegex.Match(mask);
             if (!match.Success) return;
             Nick = match.Groups[1].Value;
@@ -57,6 +59,7 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string nick, string realname, string ident, string hostname = "")
         {
+            Console.WriteLine($"User explicitly created: {nick} {realname} {ident} {hostname}");
             Nick = nick;
             RealName = realname;
             Ident = ident;
@@ -65,6 +68,7 @@ namespace Pyratron.PyraChat.IRC
 
         public User(string nick, string channel, UserRank rank)
         {
+            Console.WriteLine($"User created with channel: {nick} {channel} {rank}");
             Nick = nick;
             if (!ranks.ContainsKey(channel))
                 ranks.TryAdd(channel, new List<UserRank>());
@@ -135,6 +139,11 @@ namespace Pyratron.PyraChat.IRC
             AwayMessage = away ? reason : string.Empty;
             isAway = away;
             client.OnAwayChange(this, away);
+        }
+
+        public override string ToString()
+        {
+            return $"{Nick}!{Ident}@{Host}";
         }
     }
 }

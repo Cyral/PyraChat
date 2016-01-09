@@ -16,7 +16,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
         public NamesMessage(Message msg) : base(msg)
         {
             Channel = msg.Client.ChannelFromName(msg.Parameters[2]);
-            if (msg.Client.UserFromNick(msg.Destination) == msg.Client.User)
+         //   if (msg.Client.UserFromNick(msg.Destination) == msg.Client.User)
             {
                 var users = msg.Parameters[3].Split(separator, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var user in users)
@@ -30,12 +30,14 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
                         {
                             //Create new user, remove rank characters from username
                             var newUser = new User(ranks.Min() != UserRank.None ? user.Substring(ranks.Length) : user, Channel.Name, UserRank.None);
+                            msg.Client.Users.Add(newUser);
+                            Channel.AddUser(newUser);
                             foreach (var rank in ranks)
                                 newUser.AddRank(msg.Client, Channel.Name, rank);
-                            Channel.AddUser(newUser);
                         }
                         else //Update ranks of existing users (ourselves).
                         {
+                            Channel.AddUser(chanUser);
                             foreach (var rank in ranks)
                                 chanUser.AddRank(msg.Client, Channel.Name, rank);
                         }
@@ -45,10 +47,17 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
                         var rank = UserRank.FromPrefix(user[0]);
                         var chanUser = msg.Client.UserFromNick(user);
                         if (chanUser == null) //Add new users discovered in response.
-                            Channel.AddUser(new User(rank != UserRank.None ? user.Substring(1) : user, Channel.Name,
-                                rank));
+                        {
+                            var newUser = new User(rank != UserRank.None ? user.Substring(1) : user, Channel.Name,
+                                rank);
+                            Channel.AddUser(newUser);
+                            msg.Client.Users.Add(newUser);
+                        }
                         else //Update ranks of existing users (ourselves).
+                        {
+                            Channel.AddUser(chanUser);
                             chanUser.AddRank(msg.Client, Channel.Name, rank);
+                        }
                     }
                 }
                 msg.Client.OnReplyNames(this);

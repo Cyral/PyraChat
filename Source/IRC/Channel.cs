@@ -85,10 +85,13 @@ namespace Pyratron.PyraChat.IRC
         /// </summary>
         public void AddUser(User user)
         {
-            user.Channels.Add(this);
-            if (!Client.Users.Contains(user))
-                Client.Users.Add(user);
-            OnUserAdd(user);
+            if (!user.Channels.Contains(this))
+            {
+                user.Channels.Add(this);
+                if (!Client.Users.Contains(user))
+                    Client.Users.Add(user);
+                OnUserAdd(user);
+            }
         }
 
         public void RemoveUser(User user)
@@ -302,6 +305,11 @@ namespace Pyratron.PyraChat.IRC
                 BanList.Remove(mask);
                 OnBanChange(mask, false);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
 
         #region Events

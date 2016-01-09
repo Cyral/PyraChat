@@ -16,23 +16,25 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
 
         public JoinMessage(Message msg) : base(msg)
         {
-            Channel = new Channel(msg.Client, msg.Destination);
+            Channel = msg.Client.ChannelFromName(msg.Destination);
+            var user = User;
             if (!msg.Client.Channels.Any(c => c.Name.Equals(msg.Destination, StringComparison.OrdinalIgnoreCase)))
             {
                 //Add initial channel and user
+                msg.Client.User.Host = BaseMessage.User.Host;
+                user = msg.Client.User;
                 msg.Client.Channels.Add(Channel);
-                Channel.AddUser(msg.Client.User);
             }
 
-            if (msg.User == msg.Client.User) //If user joined is ourself
+            if (user == msg.Client.User) //If user joined is ourself
             {
                 msg.Client.OnChannelJoin(this);
-                msg.Channel.AddUser(User);
+                msg.Channel.AddUser(user);
                 msg.Client.Send(new WhoMessage(Channel.Name)); //Request information about users in this channel, such as away status.
             }
             else
             {
-                msg.Channel.AddUser(User);
+                msg.Channel.AddUser(user);
                 msg.Channel.OnUserJoin(this);
             }
         }

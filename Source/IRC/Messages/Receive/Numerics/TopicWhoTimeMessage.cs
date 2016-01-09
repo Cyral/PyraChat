@@ -21,7 +21,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
 
         public TopicWhoTimeMessage(Message msg) : base(msg)
         {
-            Author = new User(msg.Parameters[2]);
+            Author = msg.Client.UserFromMask(msg.Parameters[2]);
             Date = Utils.UnixTimeStampToDateTime(int.Parse(msg.Parameters[3]));
             Channel.Topic.Date = Date;
             Channel.Topic.Author = Author;

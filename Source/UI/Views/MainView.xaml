@@ -7,6 +7,7 @@
                       xmlns:System="clr-namespace:System;assembly=mscorlib"
                       xmlns:irc="clr-namespace:Pyratron.PyraChat.IRC;assembly=IRC"
                       xmlns:views="clr-namespace:Pyratron.PyraChat.UI.Views"
+                      xmlns:helpers="clr-namespace:Pyratron.PyraChat.UI.Helpers"
                       mc:Ignorable="d"
                       Title="PyraChat IRC"
                       TitleCaps="False"
@@ -39,32 +40,66 @@
             <ColumnDefinition MinWidth="128" MaxWidth="256" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
         </Grid.RowDefinitions>
-   
-        <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="0" Margin="16,16,0,16">
+        <StackPanel Orientation="Horizontal" Margin="16,16,16,0" Grid.Row=" 0" Grid.Column=" 0" Grid.ColumnSpan="2">
+            <Label Margin="0" Padding="0">
+                <TextBlock>
+                    <Run Text="{Binding Channel.Name}" FontWeight="Bold" />
+                    <Run Text="{Binding Channel.Topic}" />
+                </TextBlock>
+            </Label>
+        </StackPanel>
+        <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="1" Margin="16,16,0,16">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Label Margin="0">
-                <TextBlock>
-                <Run Text="{Binding Channel.Name}" FontWeight="Bold"></Run>
-                <Run Text="{Binding Channel.Topic}"></Run>
-                    </TextBlock>
-            </Label>
-            <views:ChatView Grid.Column="0" Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
+            <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Channel.Lines}" Padding="6,2"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          helpers:ItemsControlHelper.ScrollToLastItem="true">
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <Border BorderBrush="LightGray"
+                                BorderThickness="1">
+                            <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Foreground="#6c6c6c"
+                                       Text="{Binding Time, StringFormat={}{0:h:mm}}" />
+                            <TextBlock Grid.Column="1" Margin="4,0,0,0" Text="{Binding Sender.User.Nick}"
+                                       Visibility="{Binding System, Converter={StaticResource BoolToVisCollapsedInvert}}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding Sender.Color}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                            <TextBlock Grid.Column="2" Margin="4,0,0,0" Text="{Binding Message}" TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <TextBox Margin="0,16,0,0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
-                     VerticalScrollBarVisibility="Auto" Grid.Row="2"
+                     VerticalScrollBarVisibility="Auto" Grid.Row="1"
                      Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
-        <TreeView Grid.Row="0" Grid.Column="1" Margin="16"
+        <TreeView Grid.Row="1" Grid.Column="1" Margin="16"
                   BorderBrush="LightGray" BorderThickness="1"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
             <TreeViewItem Header="Frogbox" IsExpanded="True"
@@ -76,7 +111,7 @@
             </TreeViewItem>
         </TreeView>
 
-        <ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch"
+        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch"
                  Margin="16,0,16,16"
                  BorderBrush="LightGray" BorderThickness="1">
             <ListBox.ItemContainerStyle>
@@ -99,7 +134,8 @@
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
-                        </TextBlock><Run Text="{Binding User.Nick, Mode=OneWay}" />
+                        </TextBlock><!-- Make sure there are no spaces between here
+                        --><Run Text="{Binding User.Nick, Mode=OneWay}" />
                         <TextBlock
                             Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"
                             Foreground="Gray" FontStyle="Italic">

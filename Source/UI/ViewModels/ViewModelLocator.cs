@@ -33,30 +33,24 @@ namespace Pyratron.PyraChat.UI.ViewModels
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Unregister<MainViewModel>();
-            SimpleIoc.Default.Unregister<ChatViewModel>();
 
             if (ViewModelBase.IsInDesignModeStatic)
             {
                 // Create design time view services and models
                 SimpleIoc.Default.Register(() => new MainViewModel(true));
-                SimpleIoc.Default.Register(() => new ChatViewModel(true));
             }
             else
             {
                 // Create run time view services and models
                 SimpleIoc.Default.Register(() => new MainViewModel(false));
-                SimpleIoc.Default.Register(() => new ChatViewModel(false));
             }
         }
 
         public static MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
 
-        public static ChatViewModel Chat => ServiceLocator.Current.GetInstance<ChatViewModel>();
-
         public static void Cleanup()
         {
             Main.Cleanup();
-            Chat.Cleanup();
         }
     }
 }

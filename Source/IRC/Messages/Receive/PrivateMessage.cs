@@ -16,7 +16,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
         /// <summary>
         /// Message text.
         /// </summary>
-        public string Text => BaseMessage.Parameters[1];
+        public string Message => BaseMessage.Parameters[1];
 
         public PrivateMessage(Message msg) : base(msg)
         {

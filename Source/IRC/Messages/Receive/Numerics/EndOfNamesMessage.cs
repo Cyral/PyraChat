@@ -13,7 +13,7 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
 
         public EndOfNamesMessage(Message msg) : base(msg)
         {
-            Channel = msg.Client.ChannelFromName(msg.Parameters[2]);
+            Channel = msg.Client.ChannelFromName(msg.Parameters[1]);
             if (Channel != null)
                 msg.Client.OnReplyEndOfNames(this);
         }
