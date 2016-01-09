@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -26,32 +27,12 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        public ObservableCollection<UiUser> DisplayUsers
+        public Network Network
         {
-            get { return displayUsers; }
+            get { return network; }
             set
             {
-                displayUsers = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public ObservableCollection<UiUser> Users
-        {
-            get { return users; }
-            set
-            {
-                users = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public ObservableCollection<UiChannel> Channels
-        {
-            get { return channels; }
-            set
-            {
-                channels = value;
+                network = value;
                 RaisePropertyChanged();
             }
         }
@@ -66,12 +47,20 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        private readonly Client irc;
-        private readonly UiUser me;
+        public ObservableCollection<Network> Networks
+        {
+            get { return networks; }
+            set
+            {
+                networks = value;
+                RaisePropertyChanged();
+            }
+        }
 
+        private Network network;
         private UiChannel channel;
-        private ObservableCollection<UiChannel> channels;
         private string chatLineText;
+        private ObservableCollection<Network> networks;
 
         private readonly Color[] colors =
         {
@@ -86,76 +75,28 @@ namespace Pyratron.PyraChat.UI.ViewModels
         };
 
         private readonly Random random = new Random();
-        private ObservableCollection<UiUser> users, displayUsers;
 
         public MainViewModel(bool designTime)
         {
-            Users = new ObservableCollection<UiUser>();
-            DisplayUsers = new ObservableCollection<UiUser>();
-            Channels = new ObservableCollection<UiChannel>();
+            Networks = new ObservableCollection<Network>();
             EnterCommand = new RelayCommand(OnEnter);
             SelectedChannelCommand = new RelayCommand<UiChannel>(param => OnSelectedChannelChanged(param));
-
-            var joinChannels = new[]
-            {
-                //"#aenet",
-                //"#Pyratron",
-                "#Bricklayer",
-                "#pyratest",
-            };
-
-            if (!designTime)
-            {
-                var userirc = new User("PyraChat", "PyraChat", "pyra");
-                me = new UiUser(userirc, GenColor());
-                irc = new Client("frogbox.es", 6667, userirc);
-                irc.IRCMessage += message => Console.WriteLine(message.Text);
-                irc.Connect += () =>
-                {
-                    foreach (var chan in joinChannels)
-                        irc.Send(new JoinMessage(chan));
-                };
-                irc.Nick += message => { SortUsers(); };
-                irc.RankChange += (user, channel, rank) => { SortUsers(); };
-                irc.AwayChange += (user, away) => { SortUsers(); };
-                irc.ChannelJoin += message =>
-                {
-                    var channelJoined = new UiChannel(message.Channel);
-                    if (Channel == null)
-                        Channel = channelJoined;
-                    DispatcherHelper.CheckBeginInvokeOnUI(() => Channels.Add(channelJoined));
-                    message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
-                    { DispatcherHelper.CheckBeginInvokeOnUI(() => { Channel.AddLine(privateMessage); }); };
-
-                    message.Channel.UserAdd += user =>
-                    {
-                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                        {
-                            Users.Add(new UiUser(user, GenColor()));
-                            SortUsers();
-                        });
-                    };
-
-                    message.Channel.UserRemove += user =>
-                    {
-                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                        {
-                            Users.Remove(Users.FirstOrDefault(x => x.User == user));
-                            SortUsers();
-                        });
-                    };
-                };
-                //irc.ReplyMOTDEnd += delegate(MOTDEndMessage message) { Text += message.MOTD + Environment.NewLine; };
-                irc.Start();
-            }
         }
 
-        public UiUser GetUser(User user)
+        public void Connect()
         {
-            return Users.FirstOrDefault(x => x.User == user);
+            var user = new User("PyraChat", "PyraChat", "pyra");
+            Networks.Add(new Network("frogbox.es", 6667, user, new[]
+            {
+                    //"#aenet",
+                    //"#Pyratron",
+                    "#Bricklayer",
+                    "#pyratest",
+                }));
+            Network = Networks[0];
         }
 
-        private Color GenColor()
+        public Color GenColor()
         {
             return colors[random.Next(0, colors.Length)];
         }
@@ -163,27 +104,15 @@ namespace Pyratron.PyraChat.UI.ViewModels
         private void OnEnter()
         {
             var msg = new PrivateMessage(Channel.Name, ChatLineText);
-            irc.Send(msg);
-            Channel.AddLine(msg, me);
+            Channel.Send(msg);
+            Channel.AddSelf(msg);
             ChatLineText = string.Empty;
         }
 
         private void OnSelectedChannelChanged(UiChannel channel)
         {
             Channel = channel;
-            SortUsers();
-        }
-
-        private void SortUsers()
-        {
-            foreach (var user in users)
-                user.Rank = user.User.GetRank(channel.Channel.Name);
-            DisplayUsers =
-                new ObservableCollection<UiUser>(
-                    Users.Where(u => u.User.Channels.Contains(Channel.Channel))
-                        .DistinctBy(u => u.User)
-                        .OrderBy(u => u.Rank)
-                        .ThenBy(u => u.User.Nick));
+            Channel.Network.SortUsers();
         }
     }
 }

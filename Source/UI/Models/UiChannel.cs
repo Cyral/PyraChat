@@ -1,9 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using System.Linq;
 using GalaSoft.MvvmLight;
 using Pyratron.PyraChat.IRC;
 using Pyratron.PyraChat.IRC.Messages.Receive;
-using Pyratron.PyraChat.UI.ViewModels;
 using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 
 namespace Pyratron.PyraChat.UI.Models
@@ -48,13 +46,16 @@ namespace Pyratron.PyraChat.UI.Models
             }
         }
 
+        internal Network Network { get; }
+
         private ObservableCollection<ChatLine> lines;
 
         private string topic, name;
 
-        public UiChannel(Channel channel)
+        public UiChannel(Channel channel, Network network)
         {
             Channel = channel;
+            Network = network;
             channel.TopicChange += ChannelOnTopicChange;
             Name = channel.Name;
             Lines = new ObservableCollection<ChatLine>();
@@ -62,13 +63,18 @@ namespace Pyratron.PyraChat.UI.Models
 
         public void AddLine(PrivateMessage privateMessage)
         {
-            var user = ViewModelLocator.Main.GetUser(privateMessage.BaseMessage.User);
+            var user = Network.GetUser(privateMessage.BaseMessage.User);
             Lines.Add(new ChatLine(user, privateMessage.Message));
         }
 
-        public void AddLine(IRC.Messages.Send.PrivateMessage privateMessage, UiUser user)
+        public void AddSelf(IRC.Messages.Send.PrivateMessage privateMessage)
         {
-            Lines.Add(new ChatLine(user, privateMessage.Message));
+            Lines.Add(new ChatLine(Network.Me, privateMessage.Message));
+        }
+
+        public void Send(IRC.Messages.Send.PrivateMessage msg)
+        {
+            Network.Client.Send(msg);
         }
 
         private void ChannelOnTopicChange(TopicMessage message)

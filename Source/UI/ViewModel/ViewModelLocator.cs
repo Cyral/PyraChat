@@ -12,12 +12,11 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using System.Windows.Navigation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Pyratron.PyraChat.UI.ViewModels
+namespace Pyratron.PyraChat.UI.ViewModel
 {
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -28,31 +27,35 @@ namespace Pyratron.PyraChat.UI.ViewModels
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
-        static ViewModelLocator()
+        public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Unregister<MainViewModel>();
+            ////if (ViewModelBase.IsInDesignModeStatic)
+            ////{
+            ////    // Create design time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
+            ////}
+            ////else
+            ////{
+            ////    // Create run time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DataService>();
+            ////}
 
-            if (ViewModelBase.IsInDesignModeStatic)
-            {
-                // Create design time view services and models.
-                SimpleIoc.Default.Register(() => new MainViewModel(true));
-            }
-            else
-            {
-                // Create run time view services and models.
-                var main = new MainViewModel(false);
-                SimpleIoc.Default.Register(() => main);
-                main.Connect();
-            }
+            SimpleIoc.Default.Register<MainViewModel>();
         }
 
-        public static MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
-
+        public MainViewModel Main
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+        
         public static void Cleanup()
         {
-            Main.Cleanup();
+            // TODO Clear the ViewModels
         }
     }
 }

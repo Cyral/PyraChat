@@ -4,7 +4,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-                      xmlns:System="clr-namespace:System;assembly=mscorlib"
+                      xmlns:system="clr-namespace:System;assembly=mscorlib"
                       xmlns:irc="clr-namespace:Pyratron.PyraChat.IRC;assembly=IRC"
                       xmlns:views="clr-namespace:Pyratron.PyraChat.UI.Views"
                       xmlns:helpers="clr-namespace:Pyratron.PyraChat.UI.Helpers"
@@ -23,16 +23,13 @@
         <controls:WindowCommands>
             <Button Command="{Binding }"
                     ToolTip=""
-                    Content="Settings"
-                    Foreground="{StaticResource WhiteBrush}" />
+                    Content="Settings" />
             <Button Command="{Binding }"
                     ToolTip=""
-                    Content="View"
-                    Foreground="{StaticResource WhiteBrush}" />
+                    Content="View"/>
             <Button Command="{Binding }"
                     ToolTip="Join and edit servers."
-                    Content="Networks"
-                    Foreground="{StaticResource WhiteBrush}" />
+                    Content="Networks" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
@@ -101,25 +98,29 @@
         <TreeView Grid.Row="1" Grid.Column="1" Margin="16,0,16,16"
                   BorderBrush="LightGray" BorderThickness="1"
                   SelectedItemChanged="TreeView_OnSelectedItemChanged"
-                  ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
-            <TreeViewItem Header="Frogbox" IsExpanded="True"
-                          ItemContainerStyle="{StaticResource TreeViewContainerStyleIndent}"
-                          ItemsSource="{Binding Channels}">
-                <TreeViewItem.ItemTemplate>
-                    <ItemContainerTemplate>
+                  ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
+                  ItemsSource="{Binding Networks}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type models:Network}" ItemsSource="{Binding Channels}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Host}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type models:UiChannel}">
+                    <StackPanel Orientation="Horizontal" Margin="-6,0,0,0">
                         <TextBlock Text="{Binding Name}" />
-                    </ItemContainerTemplate>
-                </TreeViewItem.ItemTemplate>
-            </TreeViewItem>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
         </TreeView>
 
-        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DisplayUsers, Mode=OneWay}"
+        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Network.DisplayUsers, Mode=OneWay}"
                  VerticalAlignment="Stretch"
                  Margin="16,0,16,16"
                  BorderBrush="LightGray" BorderThickness="1">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MetroListBoxItem}">
-                    <Setter Property="Padding" Value="4,4,4,4" />
+                    <Setter Property="Padding" Value="6,2" />
                     <Setter Property="MinHeight" Value="20" />
                 </Style>
             </ListBox.ItemContainerStyle>
@@ -127,7 +128,7 @@
                 <DataTemplate>
                     <TextBlock Padding="0" Margin="0">
                         <TextBlock x:Name="Rank"
-                                   Text="{Binding Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
+                                   Text="{Binding Rank, TargetNullValue={x:Static system:String.Empty}, Mode=OneWay}">
                             <TextBlock.Style>
                                 <Style>
                                     <Style.Triggers>
