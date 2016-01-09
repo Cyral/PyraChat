@@ -98,8 +98,8 @@ namespace Pyratron.PyraChat.UI.ViewModels
 
             var joinChannels = new[]
             {
-                "#aenet",
-                "#Pyratron",
+                //"#aenet",
+                //"#Pyratron",
                 "#Bricklayer",
                 "#pyratest",
             };

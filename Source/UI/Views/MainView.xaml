@@ -58,6 +58,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            
+            <!-- Chat List -->
             <ItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Channel.Lines}" Padding="6,2"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           helpers:ItemsControlHelper.ScrollToLastItem="true">
@@ -73,25 +75,21 @@
                 </ItemsControl.Template>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Foreground="#6c6c6c"
-                                       Text="{Binding Time, StringFormat={}{0:h:mm}}" />
-                            <TextBlock Grid.Column="1" Margin="4,0,0,0" Text="{Binding Sender.User.Nick}"
-                                       Visibility="{Binding System, Converter={StaticResource BoolToVisCollapsedInvert}}">
+                        <TextBlock TextWrapping="Wrap">
+                            <Run Foreground="#6c6c6c"
+                                 Text="{Binding Time, StringFormat={}{0:h:mm}, Mode=OneWay}" />
+                            <Run Text="{Binding Sender.User.Nick, Mode=OneWay}">
                                 <TextBlock.Foreground>
                                     <SolidColorBrush Color="{Binding Sender.Color}" />
                                 </TextBlock.Foreground>
-                            </TextBlock>
-                            <TextBlock Grid.Column="2" Margin="4,0,0,0" Text="{Binding Message}" TextWrapping="Wrap" />
-                        </Grid>
+                            </Run>
+                            <Run Text="{Binding Message, Mode=OneWay}" />
+                        </TextBlock>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            
+            <!-- Chat Box -->
             <TextBox Margin="0,16,0,0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
                      VerticalScrollBarVisibility="Auto" Grid.Row="1"
                      Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
@@ -105,16 +103,18 @@
                   SelectedItemChanged="TreeView_OnSelectedItemChanged"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
             <TreeViewItem Header="Frogbox" IsExpanded="True"
-                          ItemContainerStyle="{StaticResource TreeViewContainerStyleIndent}" ItemsSource="{Binding Channels}">
+                          ItemContainerStyle="{StaticResource TreeViewContainerStyleIndent}"
+                          ItemsSource="{Binding Channels}">
                 <TreeViewItem.ItemTemplate>
                     <ItemContainerTemplate>
-                        <TextBlock Text="{Binding Name}"></TextBlock>
+                        <TextBlock Text="{Binding Name}" />
                     </ItemContainerTemplate>
                 </TreeViewItem.ItemTemplate>
             </TreeViewItem>
         </TreeView>
 
-        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DisplayUsers, Mode=OneWay}" VerticalAlignment="Stretch"
+        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DisplayUsers, Mode=OneWay}"
+                 VerticalAlignment="Stretch"
                  Margin="16,0,16,16"
                  BorderBrush="LightGray" BorderThickness="1">
             <ListBox.ItemContainerStyle>
@@ -138,15 +138,16 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock><!-- Make sure there are no spaces between here
-                        --><Run Text="{Binding User.Nick, Mode=OneWay}">
+                        -->
+                        <Run Text="{Binding User.Nick, Mode=OneWay}">
                             <Run.Foreground>
-                                <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                <SolidColorBrush Color="{Binding Color}" />
                             </Run.Foreground>
                         </Run>
                         <TextBlock
                             Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"
-                            Foreground="Gray" FontStyle="Italic" Visibility="{Binding User.IsAway, Converter={StaticResource BoolToVisCollapsed}}">
-                        </TextBlock>
+                            Foreground="Gray" FontStyle="Italic"
+                            Visibility="{Binding User.IsAway, Converter={StaticResource BoolToVisCollapsed}}" />
                     </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
