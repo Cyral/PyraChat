@@ -140,6 +140,34 @@
                 <HierarchicalDataTemplate DataType="{x:Type models:UiChannel}">
                     <StackPanel Orientation="Horizontal" Margin="-6,0,0,0">
                         <TextBlock Text="{Binding Name}" />
+                        <controls:TransitioningContentControl Content="{Binding UnreadString}"
+                                                              Margin="8,1,0,0"
+                                                              Foreground="{DynamicResource AccentColorBrush}"
+                                                              FontFamily="{StaticResource ContentFontFamily}"
+                                                              Transition="Custom">
+                            <controls:TransitioningContentControl.CustomVisualStates>
+                                <VisualState x:Name="CustomTransition">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                       Storyboard.TargetName="CurrentContentPresentationSite"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
+                                                                  Value="0" />
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00.100"
+                                                                  Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                       Storyboard.TargetName="PreviousContentPresentationSite"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00"
+                                                                  Value="1" />
+                                            <SplineDoubleKeyFrame KeyTime="00:00:00.100"
+                                                                  Value="0" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </controls:TransitioningContentControl.CustomVisualStates>
+                        </controls:TransitioningContentControl>
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>

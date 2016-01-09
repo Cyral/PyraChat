@@ -3,6 +3,7 @@ using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using Pyratron.PyraChat.IRC;
 using Pyratron.PyraChat.IRC.Messages.Receive;
+using Pyratron.PyraChat.UI.ViewModels;
 using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 
 namespace Pyratron.PyraChat.UI.Models
@@ -47,11 +48,26 @@ namespace Pyratron.PyraChat.UI.Models
             }
         }
 
+        public int Unread
+        {
+            get { return unread; }
+            set
+            {
+                unread = value;
+                UnreadString = unread > 0 ? unread.ToString() : string.Empty;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(UnreadString));
+            }
+        }
+
+        public string UnreadString { get; private set; }
+
         internal Network Network { get; }
 
         private ObservableCollection<ChatLine> lines;
 
         private string topic, name;
+        private int unread;
 
         public UiChannel(Channel channel, Network network)
         {
@@ -66,6 +82,8 @@ namespace Pyratron.PyraChat.UI.Models
         {
             var user = Network.GetUser(privateMessage.BaseMessage.User);
             Lines.Add(new ChatLine(user, privateMessage.Message));
+            if (ViewModelLocator.Main.Channel != this)
+                Unread++;
         }
 
         public void AddSystemLine(string text, Color color)

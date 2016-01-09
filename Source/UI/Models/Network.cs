@@ -169,7 +169,7 @@ namespace Pyratron.PyraChat.UI.Models
                 user.Rank = user.User.GetRank(ViewModelLocator.Main.Channel.Channel.Name);
             DisplayUsers =
                 new ObservableCollection<UiUser>(
-                    Users.Where(u => u.User.Channels.Contains(ViewModelLocator.Main.Channel.Channel))
+                    Users.ToList().Where(u => u.User.Channels.Contains(ViewModelLocator.Main.Channel.Channel))
                         .OrderBy(u => u.Rank)
                         .ThenBy(u => u.User.Nick));
         }

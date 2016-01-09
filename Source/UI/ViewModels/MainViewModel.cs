@@ -85,14 +85,20 @@ namespace Pyratron.PyraChat.UI.ViewModels
             Networks.Add(new Network("frogbox.es", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
                 //"#aenet",
-                //"#Pyratron",
+                "#Pyratron",
                 "#Bricklayer",
                 "#pyratest",
+            }));
+            /*
+            Networks.Add(new Network("irc.esper.net", 6667, new User("Cyral33", "PyraChat", "pyrachat"), new[]
+            {
+                "#Codetree",
             }));
             Networks.Add(new Network("irc.quakenet.org", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
                 "#pyratest",
             }));
+            */
             Network = Networks[0];
         }
 
@@ -112,6 +118,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
         private void OnSelectedChannelChanged(UiChannel newChannel)
         {
             Channel = newChannel;
+            Channel.Unread = 0;
             Network = Channel.Network;
             Channel.Network.SortUsers();
         }
