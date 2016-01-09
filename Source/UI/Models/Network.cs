@@ -69,6 +69,7 @@ namespace Pyratron.PyraChat.UI.Models
             Channels = new ObservableCollection<UiChannel>();
 
             Me = new UiUser(userirc, ViewModelLocator.Main.GenColor());
+            Users.Add(Me);
 
             // Create IRC client and handle connection.
             Client = new Client(host, port, userirc);
