@@ -6,9 +6,23 @@ namespace Pyratron.PyraChat.UI.Models
 {
     public class UiUser : ObservableObject
     {
+        private UserRank rank;
         public Color Color { get; set; }
 
         public User User { get; set; }
+
+        /// <summary>
+        /// Rank for the current channel being displayed.
+        /// </summary>
+        public UserRank Rank
+        {
+            get { return rank; }
+            set
+            {
+                rank = value; 
+                RaisePropertyChanged();
+            }
+        }
 
         public UiUser(User user)
         {

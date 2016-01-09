@@ -92,6 +92,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ItemsControlHelper.cs" />
     <Compile Include="Models\ChatLine.cs" />
     <Compile Include="Models\ServerSettings.cs" />

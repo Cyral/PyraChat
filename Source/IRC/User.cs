@@ -31,8 +31,6 @@ namespace Pyratron.PyraChat.IRC
         public bool IsRestricted => Modes.Contains('r');
         public bool IsOperator => Modes.Contains('o') || IsOp;
 
-        public UserRank Rank => GetRank("#pyratest");
-
         public string AwayMessage
         {
             get { return string.IsNullOrWhiteSpace(awayMessage) ? "Away" : awayMessage; }
