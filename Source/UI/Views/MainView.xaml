@@ -111,7 +111,7 @@
             </TreeViewItem>
         </TreeView>
 
-        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Users, Mode=OneWay}" VerticalAlignment="Stretch"
+        <ListBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DisplayUsers, Mode=OneWay}" VerticalAlignment="Stretch"
                  Margin="16,0,16,16"
                  BorderBrush="LightGray" BorderThickness="1">
             <ListBox.ItemContainerStyle>

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using GalaSoft.MvvmLight;
 using Pyratron.PyraChat.IRC;
+using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.UI.ViewModels;
 using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 
@@ -9,9 +10,14 @@ namespace Pyratron.PyraChat.UI.Models
 {
     public class UiChannel : ObservableObject
     {
+        /// <summary>
+        /// Underlying channel.
+        /// </summary>
         public Channel Channel { get; set; }
 
-
+        /// <summary>
+        /// Chat lines.
+        /// </summary>
         public ObservableCollection<ChatLine> Lines
         {
             get { return lines; }
@@ -21,8 +27,6 @@ namespace Pyratron.PyraChat.UI.Models
                 RaisePropertyChanged();
             }
         }
-
-        private ObservableCollection<ChatLine> lines;
 
         public string Topic
         {
@@ -44,6 +48,8 @@ namespace Pyratron.PyraChat.UI.Models
             }
         }
 
+        private ObservableCollection<ChatLine> lines;
+
         private string topic, name;
 
         public UiChannel(Channel channel)
@@ -54,7 +60,7 @@ namespace Pyratron.PyraChat.UI.Models
             Lines = new ObservableCollection<ChatLine>();
         }
 
-        public void AddLine(IRC.Messages.Receive.PrivateMessage privateMessage)
+        public void AddLine(PrivateMessage privateMessage)
         {
             var user = ViewModelLocator.Main.GetUser(privateMessage.BaseMessage.User);
             Lines.Add(new ChatLine(user, privateMessage.Message));

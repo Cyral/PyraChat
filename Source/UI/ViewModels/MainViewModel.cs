@@ -25,6 +25,16 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
+        public ObservableCollection<UiUser> DisplayUsers
+        {
+            get { return displayUsers; }
+            set
+            {
+                displayUsers = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ObservableCollection<UiUser> Users
         {
             get { return users; }
@@ -46,21 +56,22 @@ namespace Pyratron.PyraChat.UI.ViewModels
         }
 
         private readonly Client irc;
+        private readonly UiUser me;
 
         private UiChannel channel;
-        private string logText, channelText, chatLineText;
-        private readonly UiUser me;
-        private ObservableCollection<UiUser> users;
+        private string chatLineText;
+        private ObservableCollection<UiUser> users, displayUsers;
 
         public MainViewModel(bool designTime)
         {
             Users = new ObservableCollection<UiUser>();
+            DisplayUsers = new ObservableCollection<UiUser>();
             EnterCommand = new RelayCommand(OnEnter);
 
             var joinChannels = new[]
             {
-               // "#Pyratron",
-              //  "#Bricklayer",
+                "#Pyratron",
+                "#Bricklayer",
                 "#pyratest",
             };
 
@@ -131,7 +142,10 @@ namespace Pyratron.PyraChat.UI.ViewModels
         {
             Users =
                 new ObservableCollection<UiUser>(
-                    Users.Where(u => u.User.Channels.Contains(Channel.Channel)).OrderBy(u => u.User.GetRank(channel.Channel.Name)).ThenBy(u => u.User.Nick));
+                    Users.OrderBy(u => u.User.GetRank(channel.Channel.Name)).ThenBy(u => u.User.Nick));
+            DisplayUsers =
+                new ObservableCollection<UiUser>(
+                    Users.Where(u => u.User.Channels.Contains(Channel.Channel)).DistinctBy(u => u.User));
         }
     }
 }
