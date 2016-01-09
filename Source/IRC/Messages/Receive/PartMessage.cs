@@ -11,20 +11,19 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
     public class PartMessage : ReceivableMessage
     {
         /// <summary>
+        /// Part reason/message.
+        /// </summary>
+        public string Reason => BaseMessage.Parameters[1];
+
+        /// <summary>
         /// Channels parted from.
         /// </summary>
         public Channel[] Channels { get; }
 
         public User User => BaseMessage.User;
 
-        /// <summary>
-        /// Part reason/message.
-        /// </summary>
-        public string Reason { get; private set; }
-
         public PartMessage(Message msg) : base(msg)
         {
-            Reason = msg.Parameters[1];
             var channelNames = msg.Destination.Split(' ');
             Channels = channelNames.Select(channelName => msg.Client.ChannelFromName(channelName)).ToArray();
             foreach (var channel in Channels)

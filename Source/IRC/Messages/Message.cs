@@ -46,7 +46,7 @@ namespace Pyratron.PyraChat.IRC.Messages
         /// <summary>
         /// Returns the user who sent the message. If null, a new user is created from the mask.
         /// </summary>
-        public User User => Client.UserFromMask(Prefix);
+        public User User { get; private set; }
 
         /// <summary>
         /// Message parameters.
@@ -71,6 +71,8 @@ namespace Pyratron.PyraChat.IRC.Messages
                 match.Groups[3].Value.Split(separator, StringSplitOptions.RemoveEmptyEntries)
                     .Concat(new[] {match.Groups[4].Value})
                     .ToArray();
+
+            User = Client.UserFromMask(Prefix);
         }
 
         /// <summary>

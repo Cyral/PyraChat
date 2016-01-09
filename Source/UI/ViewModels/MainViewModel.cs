@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Threading;
 using Pyratron.PyraChat.IRC;
 using Pyratron.PyraChat.IRC.Messages.Send;
 using Pyratron.PyraChat.UI.Models;
@@ -57,11 +54,6 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        private Network network;
-        private UiChannel channel;
-        private string chatLineText;
-        private ObservableCollection<Network> networks;
-
         private readonly Color[] colors =
         {
             Color.FromRgb(204, 62, 62),
@@ -75,6 +67,11 @@ namespace Pyratron.PyraChat.UI.ViewModels
         };
 
         private readonly Random random = new Random();
+        private UiChannel channel;
+        private string chatLineText;
+
+        private Network network;
+        private ObservableCollection<Network> networks;
 
         public MainViewModel(bool designTime)
         {
@@ -87,10 +84,10 @@ namespace Pyratron.PyraChat.UI.ViewModels
         {
             Networks.Add(new Network("frogbox.es", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
-                    //"#aenet",
-                    //"#Pyratron",
-                    "#Bricklayer",
-                    "#pyratest",
+                //"#aenet",
+                //"#Pyratron",
+                "#Bricklayer",
+                "#pyratest",
             }));
             Networks.Add(new Network("irc.quakenet.org", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
@@ -112,9 +109,9 @@ namespace Pyratron.PyraChat.UI.ViewModels
             ChatLineText = string.Empty;
         }
 
-        private void OnSelectedChannelChanged(UiChannel channel)
+        private void OnSelectedChannelChanged(UiChannel newChannel)
         {
-            Channel = channel;
+            Channel = newChannel;
             Network = Channel.Network;
             Channel.Network.SortUsers();
         }

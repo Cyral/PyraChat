@@ -28,7 +28,7 @@
                 <Setter Property="IsExpanded" Value="True" />
             </Style>
             <viewModels:ViewModelLocator x:Key="Locator" d:IsDataSource="True"
-                                         xmlns:vm="clr-namespace:Pyratron.PyraChat.UI.ViewModel" />
+                                         xmlns:vm="clr-namespace:Pyratron.PyraChat.UI.ViewModels" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisHiddenInvert" TrueValue="Hidden" FalseValue="Visible" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisHidden" TrueValue="Visible" FalseValue="Hidden" />
             <converters:BoolToVisibilityConverter x:Key="BoolToVisCollapsed" TrueValue="Visible" FalseValue="Collapsed" />

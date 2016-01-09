@@ -13,10 +13,13 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive
         /// </summary>
         public string Nick => BaseMessage.Parameters[0];
 
+        public string OldNick { get; }
+
         public User User => BaseMessage.User;
 
         public NickMessage(Message msg) : base(msg)
         {
+            OldNick = User.Nick;
             User.Nick = Nick;
             msg.Client.OnNick(this);
         }

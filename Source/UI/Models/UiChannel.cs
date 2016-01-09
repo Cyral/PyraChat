@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using Pyratron.PyraChat.IRC;
 using Pyratron.PyraChat.IRC.Messages.Receive;
@@ -65,6 +66,11 @@ namespace Pyratron.PyraChat.UI.Models
         {
             var user = Network.GetUser(privateMessage.BaseMessage.User);
             Lines.Add(new ChatLine(user, privateMessage.Message));
+        }
+
+        public void AddSystemLine(string text, Color color)
+        {
+            Lines.Add(new ChatLine(text, color));
         }
 
         public void AddSelf(IRC.Messages.Send.PrivateMessage privateMessage)

@@ -70,18 +70,49 @@
                         </Border>
                     </ControlTemplate>
                 </ItemsControl.Template>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
+                <ItemsControl.Resources>
+                    <DataTemplate x:Key="UserChat">
                         <TextBlock TextWrapping="Wrap">
                             <Run Foreground="#6c6c6c"
                                  Text="{Binding Time, StringFormat={}{0:h:mm}, Mode=OneWay}" />
                             <Run Text="{Binding Sender.User.Nick, Mode=OneWay}">
-                                <TextBlock.Foreground>
+                                <Run.Foreground>
                                     <SolidColorBrush Color="{Binding Sender.Color}" />
-                                </TextBlock.Foreground>
+                                </Run.Foreground>
                             </Run>
                             <Run Text="{Binding Message, Mode=OneWay}" />
                         </TextBlock>
+                    </DataTemplate>
+                    <DataTemplate x:Key="SystemChat">
+                        <TextBlock TextWrapping="Wrap">
+                            <Run Foreground="#6c6c6c"
+                                 Text="{Binding Time, StringFormat={}{0:h:mm}, Mode=OneWay}" />
+                            <Run Text="{Binding Message, Mode=OneWay}">
+                                <Run.Foreground>
+                                    <SolidColorBrush Color="{Binding Color}" />
+                                </Run.Foreground>
+                            </Run>
+                        </TextBlock>
+                    </DataTemplate>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}">
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding System}" Value="True">
+                                            <Setter Property="ContentTemplate"
+                                    Value="{StaticResource SystemChat}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding System}" Value="False">
+                                            <Setter Property="ContentTemplate"
+                                    Value="{StaticResource UserChat}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -145,7 +176,7 @@
                         --><Run Text="{Binding User.Nick, Mode=OneWay}">
                         </Run>
                         <TextBlock
-                            Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"
+                            Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}{0)}, TargetNullValue=Away, FallbackValue=Away}"
                             Foreground="Gray" FontStyle="Italic"
                             Visibility="{Binding User.IsAway, Converter={StaticResource BoolToVisCollapsed}}" />
                     </TextBlock>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Threading;
 using Pyratron.PyraChat.IRC;
@@ -68,6 +69,8 @@ namespace Pyratron.PyraChat.UI.Models
             Channels = new ObservableCollection<UiChannel>();
 
             Me = new UiUser(userirc, ViewModelLocator.Main.GenColor());
+
+            // Create IRC client and handle connection.
             Client = new Client(host, port, userirc);
             Client.IRCMessage += message => Console.WriteLine(message.Text);
             Client.Connect += () =>
@@ -82,9 +85,13 @@ namespace Pyratron.PyraChat.UI.Models
                 if (message.TryGetParameter("Network", out networkName))
                     Name = networkName;
             };
+
+            // Update user list on certain events.
             Client.Nick += message => { SortUsers(); };
             Client.RankChange += (user, channel, rank) => { SortUsers(); };
             Client.AwayChange += (user, away) => { SortUsers(); };
+
+            // Subscribe to events when a channel is joined.
             Client.ChannelJoin += message =>
             {
                 var channelJoined = new UiChannel(message.Channel, this);
@@ -94,12 +101,25 @@ namespace Pyratron.PyraChat.UI.Models
                 message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(
-                    () =>
-                    {
-                        var chan = Channels.FirstOrDefault(c => c.Channel == message.Channel);
-                        chan?.AddLine(privateMessage);
-                    });
+                        () =>
+                        {
+                            var chan = Channels.FirstOrDefault(c => c.Channel == message.Channel);
+                            chan?.AddLine(privateMessage);
+                        });
                 };
+                // Show system messages (will be moved to cause/effect system eventually)
+                message.Channel.UserJoin +=
+                    joinMessage =>
+                    {
+                        AddSystemLine(
+                            $"{joinMessage.User.Nick} ({joinMessage.User.Ident}@{joinMessage.User.Host}) has joined.", channelJoined.Channel);
+                    };
+                message.Channel.UserPart +=
+                    partMessage =>
+                    {
+                        var reason = string.IsNullOrEmpty(partMessage.Reason) ? string.Empty : $"({partMessage.Reason})";
+                        AddSystemLine($"{partMessage.User.Nick} has left. {reason}", channelJoined.Channel);
+                    };
 
                 message.Channel.UserAdd += user =>
                 {
@@ -123,6 +143,17 @@ namespace Pyratron.PyraChat.UI.Models
                     });
                 };
             };
+            // Show system messages (will be moved to cause/effect system eventually)
+            Client.Quit +=
+                message =>
+                {
+                    var reason = string.IsNullOrEmpty(message.Reason) ? string.Empty : $"({message.Reason})";
+                    AddSystemLine($"{message.User.Nick} has quit. {reason}", message.User.Channels.ToArray());
+                };
+            Client.Nick += message =>
+            {
+                AddSystemLine($"{message.OldNick} is now known as {message.Nick}.", message.User.Channels.ToArray());
+            };
             //irc.ReplyMOTDEnd += delegate(MOTDEndMessage message) { Text += message.MOTD + Environment.NewLine; };
             Client.Start();
         }
@@ -141,6 +172,23 @@ namespace Pyratron.PyraChat.UI.Models
                     Users.Where(u => u.User.Channels.Contains(ViewModelLocator.Main.Channel.Channel))
                         .OrderBy(u => u.Rank)
                         .ThenBy(u => u.User.Nick));
+        }
+
+        private void AddSystemLine(string message, params Channel[] channels)
+        {
+            AddSystemLine(message, Globals.SystemColor, channels);
+        }
+
+        private void AddSystemLine(string message, Color color, params Channel[] channels)
+        {
+            if (channels.Length < 0)
+                return;
+            DispatcherHelper.CheckBeginInvokeOnUI(
+                () =>
+                {
+                    foreach (var chan in channels.Select(channel => Channels.FirstOrDefault(c => c.Channel == channel)))
+                        chan?.AddSystemLine(message, color);
+                });
         }
     }
 }
