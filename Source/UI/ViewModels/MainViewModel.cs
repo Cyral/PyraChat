@@ -73,16 +73,19 @@ namespace Pyratron.PyraChat.UI.ViewModels
         private ObservableCollection<UiChannel> channels;
         private string chatLineText;
 
-        private Color[] colors =
+        private readonly Color[] colors =
         {
             Color.FromRgb(204, 62, 62),
+            Color.FromRgb(204, 133, 62),
             Color.FromRgb(204, 204, 62),
-            Color.FromRgb(62,204, 62),
+            Color.FromRgb(62, 204, 62),
+            Color.FromRgb(62, 204, 133),
+            Color.FromRgb(62, 133, 204),
             Color.FromRgb(62, 204, 204),
             Color.FromRgb(204, 62, 204),
         };
 
-        private Random random = new Random();
+        private readonly Random random = new Random();
         private ObservableCollection<UiUser> users, displayUsers;
 
         public MainViewModel(bool designTime)
@@ -95,6 +98,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
 
             var joinChannels = new[]
             {
+                "#aenet",
                 "#Pyratron",
                 "#Bricklayer",
                 "#pyratest",
@@ -102,7 +106,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
 
             if (!designTime)
             {
-                var userirc = new User("My_Name", "My Real Name", "Tester_T");
+                var userirc = new User("PyraChat", "PyraChat", "pyra");
                 me = new UiUser(userirc, GenColor());
                 irc = new Client("frogbox.es", 6667, userirc);
                 irc.IRCMessage += message => Console.WriteLine(message.Text);
@@ -116,8 +120,10 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 irc.AwayChange += (user, away) => { SortUsers(); };
                 irc.ChannelJoin += message =>
                 {
-                    Channel = new UiChannel(message.Channel);
-                    DispatcherHelper.CheckBeginInvokeOnUI(() => Channels.Add(Channel));
+                    var channelJoined = new UiChannel(message.Channel);
+                    if (Channel == null)
+                        Channel = channelJoined;
+                    DispatcherHelper.CheckBeginInvokeOnUI(() => Channels.Add(channelJoined));
                     message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
                     { DispatcherHelper.CheckBeginInvokeOnUI(() => { Channel.AddLine(privateMessage); }); };
 

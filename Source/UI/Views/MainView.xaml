@@ -45,7 +45,7 @@
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Margin="16,16,16,0" Grid.Row=" 0" Grid.Column=" 0" Grid.ColumnSpan="2">
+        <StackPanel Orientation="Horizontal" Margin="16,12,16,8" Grid.Row=" 0" Grid.Column=" 0" Grid.ColumnSpan="2">
             <Label Margin="0" Padding="0">
                 <TextBlock>
                     <Run Text="{Binding Channel.Name}" FontWeight="Bold" />
@@ -53,7 +53,7 @@
                 </TextBlock>
             </Label>
         </StackPanel>
-        <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="1" Margin="16,16,0,16">
+        <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="1" Margin="16,0,0,16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -100,7 +100,7 @@
                 </TextBox.InputBindings>
             </TextBox>
         </Grid>
-        <TreeView Grid.Row="1" Grid.Column="1" Margin="16"
+        <TreeView Grid.Row="1" Grid.Column="1" Margin="16,0,16,16"
                   BorderBrush="LightGray" BorderThickness="1"
                   SelectedItemChanged="TreeView_OnSelectedItemChanged"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
@@ -138,42 +138,15 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock><!-- Make sure there are no spaces between here
-                        --><Run Text="{Binding User.Nick, Mode=OneWay}" />
+                        --><Run Text="{Binding User.Nick, Mode=OneWay}">
+                            <Run.Foreground>
+                                <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                            </Run.Foreground>
+                        </Run>
                         <TextBlock
                             Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"
-                            Foreground="Gray" FontStyle="Italic">
-                            <TextBlock.Style>
-                                <Style>
-                                    <Setter Property="TextBlock.Visibility" Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding User.IsAway}" Value="False">
-                                            <Setter Property="TextBlock.Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
+                            Foreground="Gray" FontStyle="Italic" Visibility="{Binding User.IsAway, Converter={StaticResource BoolToVisCollapsed}}">
                         </TextBlock>
-                        <TextBlock.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Owner}">
-                                        <Setter Property="TextBlock.Foreground" Value="#F80000" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Admin}">
-                                        <Setter Property="TextBlock.Foreground" Value="#FC7100" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Op}">
-                                        <Setter Property="TextBlock.Foreground" Value="#F8A600" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.HalfOp}">
-                                        <Setter Property="TextBlock.Foreground" Value="#0AD700" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Voice}">
-                                        <Setter Property="TextBlock.Foreground" Value="#0098E7" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
                     </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
