@@ -89,6 +89,7 @@
     <Compile Include="Messages\Receive\PartMessage.cs" />
     <Compile Include="Messages\Receive\PrivateMessage.cs" />
     <Compile Include="Messages\Receive\QuitMessage.cs" />
+    <Compile Include="Messages\Receive\TopicMessage.cs" />
     <Compile Include="Messages\Receive\UserModeMessage.cs" />
     <Compile Include="Messages\Receive\v3\AwayMessage.cs" />
     <Compile Include="Messages\Receive\v3\CapabilityMessage.cs" />

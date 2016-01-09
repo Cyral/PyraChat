@@ -8,9 +8,9 @@ namespace Pyratron.PyraChat.IRC.Messages.Receive.Numerics
     /// </summary>
     public class TopicMessage : ReceivableMessage
     {
-        public string Topic => BaseMessage.Parameters[2];
+        public virtual string Topic => BaseMessage.Parameters[2];
 
-        public Channel Channel =>
+        public virtual Channel Channel =>
             BaseMessage.Client.Channels.FirstOrDefault(
                 c => c.Name.Equals(BaseMessage.Parameters[1], StringComparison.OrdinalIgnoreCase));
 

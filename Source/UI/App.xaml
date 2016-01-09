@@ -3,7 +3,8 @@
              StartupUri="Views/MainView.xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d"
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:viewModels="clr-namespace:Pyratron.PyraChat.UI.ViewModels">
+             xmlns:viewModels="clr-namespace:Pyratron.PyraChat.UI.ViewModels"
+             xmlns:converters="clr-namespace:Pyratron.PyraChat.UI.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -36,6 +37,11 @@
             </Style>
             
             <viewModels:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisHiddenInvert" TrueValue="Hidden" FalseValue="Visible" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisHidden" TrueValue="Visible" FalseValue="Hidden" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisCollapsed" TrueValue="Visible" FalseValue="Collapsed" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisCollapsedInvert" TrueValue="Collapsed" FalseValue="Visible" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

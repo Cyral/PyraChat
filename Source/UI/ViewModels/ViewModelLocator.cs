@@ -28,27 +28,35 @@ namespace Pyratron.PyraChat.UI.ViewModels
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
-        public ViewModelLocator()
+        static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+
+            SimpleIoc.Default.Unregister<MainViewModel>();
+            SimpleIoc.Default.Unregister<ChatViewModel>();
 
             if (ViewModelBase.IsInDesignModeStatic)
             {
                 // Create design time view services and models
-                SimpleIoc.Default.Register((() => new MainViewModel(true)));
+                SimpleIoc.Default.Register(() => new MainViewModel(true));
+                SimpleIoc.Default.Register(() => new ChatViewModel(true));
             }
             else
             {
                 // Create run time view services and models
-                SimpleIoc.Default.Register((() => new MainViewModel(false)));
+                SimpleIoc.Default.Register(() => new MainViewModel(false));
+                SimpleIoc.Default.Register(() => new ChatViewModel(false));
             }
         }
 
-        public MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+        public static MainViewModel Main => ServiceLocator.Current.GetInstance<MainViewModel>();
+
+        public static ChatViewModel Chat => ServiceLocator.Current.GetInstance<ChatViewModel>();
 
         public static void Cleanup()
         {
-            // TODO Clear the ViewModels
+            Main.Cleanup();
+            Chat.Cleanup();
         }
     }
 }

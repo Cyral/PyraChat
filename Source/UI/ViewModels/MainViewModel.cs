@@ -1,37 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Threading;
 using Pyratron.PyraChat.IRC;
 using Pyratron.PyraChat.IRC.Messages.Send;
+using Pyratron.PyraChat.UI.Models;
 
 namespace Pyratron.PyraChat.UI.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
         public RelayCommand EnterCommand { get; }
-
-        public string LogText
-        {
-            get { return logText; }
-            set
-            {
-                logText = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ChannelText
-        {
-            get { return channelText; }
-            set
-            {
-                channelText = value;
-                RaisePropertyChanged();
-            }
-        }
 
         public string ChatLineText
         {
@@ -43,7 +25,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        public ObservableCollection<User> Users
+        public ObservableCollection<UiUser> Users
         {
             get { return users; }
             set
@@ -53,24 +35,33 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
-        private Channel channel;
+        public UiChannel Channel
+        {
+            get { return channel; }
+            set
+            {
+                channel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private UiChannel channel;
         private readonly Client irc;
         private string logText, channelText, chatLineText;
-        private ObservableCollection<User> users;
+        private ObservableCollection<UiUser> users;
 
         public MainViewModel(bool designTime)
         {
-            Users = new ObservableCollection<User>();
+            Users = new ObservableCollection<UiUser>();
             EnterCommand = new RelayCommand(OnEnter);
 
             if (!designTime)
             {
                 irc = new Client("frogbox.es", 6667, new User("My_Name", "My Real Name", "Tester_T"));
-                irc.IRCMessage += message => LogText += message.Text + Environment.NewLine;
+                irc.IRCMessage += message => Console.WriteLine(message.Text);
                 irc.Connect += () =>
                 {
-                    irc.Send(new JoinMessage("#pyrachat"));
-                    //irc.Send(new PrivateMessage("#pyrachat", "Testing123"));
+                    irc.Send(new JoinMessage("#pyratest"));
                 };
                 irc.Nick += message =>
                 {
@@ -86,16 +77,20 @@ namespace Pyratron.PyraChat.UI.ViewModels
                 };
                 irc.ChannelJoin += message =>
                 {
-                    channel = message.Channel;
-                    ChannelText += "Talking in " + message.Channel.Name + Environment.NewLine;
+                    Channel = new UiChannel(message.Channel);
                     message.Channel.Message += privateMessage => //Subscribe to the joined channel's messages
-                    { ChannelText += privateMessage.Text + Environment.NewLine; };
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            ViewModelLocator.Chat.AddLine(privateMessage);
+                        });
+                    };
 
                     message.Channel.UserAdd += user =>
                     {
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            Users.Add(user);
+                            Users.Add(new UiUser(user, GenColor()));
                             SortUsers();
                         });
                     };
@@ -104,7 +99,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
                     {
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            Users.Remove(user);
+                            Users.Remove(Users.FirstOrDefault(x=> x.User == user));
                             SortUsers();
                         });
                     };
@@ -114,14 +109,24 @@ namespace Pyratron.PyraChat.UI.ViewModels
             }
         }
 
+        public UiUser GetUser(User user)
+        {
+            return Users.FirstOrDefault(x => x.User == user);
+        }
+
+        private Color GenColor()
+        {
+            return Colors.Red;
+        }
+
         private void SortUsers()
         {
-            Users = new ObservableCollection<User>(Users.OrderBy(u => u.GetRank(channel.Name)).ThenBy(u => u.Nick));
+            Users = new ObservableCollection<UiUser>(Users.OrderBy(u => u.User.GetRank(channel.Channel.Name)).ThenBy(u => u.User.Nick));
         }
 
         private void OnEnter()
         {
-            irc.Send(new PrivateMessage("#pyrachat", ChatLineText));
+            irc.Send(new PrivateMessage("#pyratest", ChatLineText));
             ChatLineText = string.Empty;
         }
     }

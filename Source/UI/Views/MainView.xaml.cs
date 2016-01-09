@@ -24,7 +24,7 @@ namespace Pyratron.PyraChat.UI.Views
         public MainView()
         {
             InitializeComponent();
-            DataContext = new MainViewModel(false);
+            DataContext = ViewModelLocator.Main;
         }
     }
 }

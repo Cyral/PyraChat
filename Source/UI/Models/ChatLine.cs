@@ -1,5 +1,4 @@
 ﻿using System;
-using Pyratron.PyraChat.IRC;
 
 namespace Pyratron.PyraChat.UI.Models
 {
@@ -11,7 +10,7 @@ namespace Pyratron.PyraChat.UI.Models
         /// <summary>
         /// User who sent the message. Null if system message.
         /// </summary>
-        public User User { get; }
+        public UiUser Sender { get; }
 
         /// <summary>
         /// Message text.
@@ -23,12 +22,14 @@ namespace Pyratron.PyraChat.UI.Models
         /// </summary>
         public DateTime Time { get; }
 
+        public bool System { get; }
+
         /// <summary>
         /// Creates a new chat line from the specified user.
         /// </summary>
-        public ChatLine(User user, string message)
+        public ChatLine(UiUser user, string message)
         {
-            User = user;
+            Sender = user;
             Message = message;
             Time = DateTime.Now;
         }
@@ -38,6 +39,7 @@ namespace Pyratron.PyraChat.UI.Models
         /// </summary>
         public ChatLine(string message)
         {
+            System = true;
             Message = message;
             Time = DateTime.Now;
         }

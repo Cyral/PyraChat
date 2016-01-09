@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Pyratron.PyraChat.IRC.Messages.Receive;
 using Pyratron.PyraChat.IRC.Messages.Receive.Numerics;
+using TopicMessage = Pyratron.PyraChat.IRC.Messages.Receive.Numerics.TopicMessage;
 
 namespace Pyratron.PyraChat.IRC.Messages
 {
@@ -91,6 +92,7 @@ namespace Pyratron.PyraChat.IRC.Messages
             if (KickMessage.CanProcess(this)) return new KickMessage(this);
             if (InviteMessage.CanProcess(this)) return new InviteMessage(this);
             if (OperwallMessage.CanProcess(this)) return new OperwallMessage(this);
+            if (Receive.TopicMessage.CanProcess(this)) return new Receive.TopicMessage(this);
 
             // IRCv3 messages.
             if (Receive.v3.CapabilityMessage.CanProcess(this)) return new Receive.v3.CapabilityMessage(this);

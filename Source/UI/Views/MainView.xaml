@@ -6,7 +6,7 @@
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:System="clr-namespace:System;assembly=mscorlib"
                       xmlns:irc="clr-namespace:Pyratron.PyraChat.IRC;assembly=IRC"
-                      xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                      xmlns:views="clr-namespace:Pyratron.PyraChat.UI.Views"
                       mc:Ignorable="d"
                       Title="PyraChat IRC"
                       TitleCaps="False"
@@ -42,15 +42,22 @@
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
         </Grid.RowDefinitions>
+   
         <Grid Grid.Column="0" Grid.RowSpan="2" Grid.Row="0" Margin="16,16,0,16">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                     VerticalScrollBarVisibility="Auto" Text="{Binding LogText}" FontFamily="Consolas" />
+            <Label Margin="0">
+                <TextBlock>
+                <Run Text="{Binding Channel.Name}" FontWeight="Bold"></Run>
+                <Run Text="{Binding Channel.Topic}"></Run>
+                    </TextBlock>
+            </Label>
+            <views:ChatView Grid.Column="0" Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
             <TextBox Margin="0,16,0,0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
-                     VerticalScrollBarVisibility="Auto" Grid.Row="1"
+                     VerticalScrollBarVisibility="Auto" Grid.Row="2"
                      Text="{Binding ChatLineText,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding EnterCommand}" />
@@ -82,24 +89,26 @@
                 <DataTemplate>
                     <TextBlock Padding="0" Margin="0">
                         <TextBlock x:Name="Rank"
-                                   Text="{Binding Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
+                                   Text="{Binding User.Rank, TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}">
                             <TextBlock.Style>
                                 <Style>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.None}">
+                                        <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.None}">
                                             <Setter Property="TextBlock.Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBlock.Style>
-                        </TextBlock><Run Text="{Binding Nick, Mode=OneWay}" />
-                        <TextBlock Text="{Binding AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}" Foreground="Gray" FontStyle="Italic">
+                        </TextBlock><Run Text="{Binding User.Nick, Mode=OneWay}" />
+                        <TextBlock
+                            Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}({0}), TargetNullValue=Away, FallbackValue=Away}"
+                            Foreground="Gray" FontStyle="Italic">
                             <TextBlock.Style>
                                 <Style>
-                                    <Setter Property="TextBlock.Visibility" Value="Visible"/>
+                                    <Setter Property="TextBlock.Visibility" Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAway}" Value="False">
-                                            <Setter Property="TextBlock.Visibility" Value="Collapsed"/>
+                                        <DataTrigger Binding="{Binding User.IsAway}" Value="False">
+                                            <Setter Property="TextBlock.Visibility" Value="Collapsed" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -108,19 +117,19 @@
                         <TextBlock.Style>
                             <Style>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Owner}">
+                                    <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.Owner}">
                                         <Setter Property="TextBlock.Foreground" Value="#F80000" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Admin}">
+                                    <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.Admin}">
                                         <Setter Property="TextBlock.Foreground" Value="#FC7100" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Op}">
+                                    <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.Op}">
                                         <Setter Property="TextBlock.Foreground" Value="#F8A600" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.HalfOp}">
+                                    <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.HalfOp}">
                                         <Setter Property="TextBlock.Foreground" Value="#0AD700" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding Rank}" Value="{x:Static irc:UserRank.Voice}">
+                                    <DataTrigger Binding="{Binding User.Rank}" Value="{x:Static irc:UserRank.Voice}">
                                         <Setter Property="TextBlock.Foreground" Value="#0098E7" />
                                     </DataTrigger>
                                 </Style.Triggers>

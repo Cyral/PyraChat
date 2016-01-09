@@ -24,11 +24,13 @@ namespace Pyratron.PyraChat.IRC
 
         public string Host { get; internal set; }
         public List<char> Modes { get; } = new List<char>();
-        public List<Channel> Channels { get; internal set; } = new List<Channel>();
+        public List<Channel> Channels { get; internal protected set; } = new List<Channel>();
         public bool IsAway => Modes.Contains('a') || isAway;
         public bool IsInvisible => Modes.Contains('i');
         public bool IsRestricted => Modes.Contains('r');
         public bool IsOperator => Modes.Contains('o') || IsOp;
+
+        public UserRank Rank => GetRank("#pyratest");
 
         public string AwayMessage
         {
