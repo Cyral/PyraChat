@@ -138,8 +138,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock><!-- Make sure there are no spaces between here
-                        -->
-                        <Run Text="{Binding User.Nick, Mode=OneWay}">
+                        --><Run Text="{Binding User.Nick, Mode=OneWay}">
                             <Run.Foreground>
                                 <SolidColorBrush Color="{Binding Color}" />
                             </Run.Foreground>
