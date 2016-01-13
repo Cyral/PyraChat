@@ -91,6 +91,8 @@ namespace Pyratron.PyraChat.IRC
                 Send(new CapabilityEndMessage());
             };
             Ping += message => Send(new PongMessage(message.Extra));
+            // Request channel modes on channel join.
+            ChannelJoin += message => Send(new Messages.Send.ChannelModeMessage(message.Channel));
         }
 
         /// <summary>

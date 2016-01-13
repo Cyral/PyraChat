@@ -43,6 +43,14 @@ namespace Pyratron.PyraChat.IRC.Messages.Send
             Parameters = parameters;
         }
 
+        /// <summary>
+        /// Query channel for modes.
+        /// </summary>
+        public ChannelModeMessage(Channel channel)
+        {
+            Channel = channel.Name;
+        }
+
         public void Send(StreamWriter writer, Client client)
         {
             if (string.IsNullOrWhiteSpace(Modes))

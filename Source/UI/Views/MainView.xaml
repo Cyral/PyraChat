@@ -47,6 +47,7 @@
                 <TextBlock>
                     <Run Text="{Binding Channel.Name}" FontWeight="Bold" />
                     <Run Text="{Binding Channel.Topic}" />
+                    <Run Text="{Binding Channel.Modes}" Foreground="Gray" />
                 </TextBlock>
             </Label>
         </StackPanel>
@@ -204,7 +205,7 @@
                         --><Run Text="{Binding User.Nick, Mode=OneWay}">
                         </Run>
                         <TextBlock
-                            Text="{Binding User.AwayMessage, Mode=OneWay, StringFormat={}{0)}, TargetNullValue=Away, FallbackValue=Away}"
+                            Text="{Binding User.AwayMessage, Mode=OneWay}"
                             Foreground="Gray" FontStyle="Italic"
                             Visibility="{Binding User.IsAway, Converter={StaticResource BoolToVisCollapsed}}" />
                     </TextBlock>

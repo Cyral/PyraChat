@@ -126,6 +126,7 @@ namespace Pyratron.PyraChat.IRC.Messages
                 if (AwayMessage.CanProcess(this)) return new AwayMessage(this);
                 if (UnAwayMessage.CanProcess(this)) return new UnAwayMessage(this);
                 if (NowAwayMessage.CanProcess(this)) return new NowAwayMessage(this);
+                if (ChannelModeIsMessage.CanProcess(this)) return new ChannelModeIsMessage(this);
                 if (UModeIsMessage.CanProcess(this)) return new UModeIsMessage(this);
                 if (VersionMessage.CanProcess(this)) return new VersionMessage(this);
                 if (TimeMessage.CanProcess(this)) return new TimeMessage(this);

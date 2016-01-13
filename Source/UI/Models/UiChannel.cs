@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using Pyratron.PyraChat.IRC;
@@ -60,13 +61,28 @@ namespace Pyratron.PyraChat.UI.Models
             }
         }
 
+        public string Modes
+        {
+            get
+            {
+                if (modes.Length > 0)
+                    return "+" + modes;
+                return string.Empty;
+            }
+            set
+            {
+                modes = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public string UnreadString { get; private set; }
 
         internal Network Network { get; }
 
         private ObservableCollection<ChatLine> lines;
 
-        private string topic, name;
+        private string topic, name, modes;
         private int unread;
 
         public UiChannel(Channel channel, Network network)
@@ -74,6 +90,8 @@ namespace Pyratron.PyraChat.UI.Models
             Channel = channel;
             Network = network;
             channel.TopicChange += ChannelOnTopicChange;
+            channel.ModeAdd += ChannelOnModeAdd;
+            channel.ModeRemove += ChannelOnModeRemove;
             Name = channel.Name;
             Lines = new ObservableCollection<ChatLine>();
         }
@@ -86,14 +104,14 @@ namespace Pyratron.PyraChat.UI.Models
                 Unread++;
         }
 
-        public void AddSystemLine(string text, Color color)
-        {
-            Lines.Add(new ChatLine(text, color));
-        }
-
         public void AddSelf(IRC.Messages.Send.PrivateMessage privateMessage)
         {
             Lines.Add(new ChatLine(Network.Me, privateMessage.Message));
+        }
+
+        public void AddSystemLine(string text, Color color)
+        {
+            Lines.Add(new ChatLine(text, color));
         }
 
         public void Send(IRC.Messages.Send.PrivateMessage msg)
@@ -101,9 +119,24 @@ namespace Pyratron.PyraChat.UI.Models
             Network.Client.Send(msg);
         }
 
+        private void ChannelOnModeAdd(char mode)
+        {
+            UpdateModeString();
+        }
+
+        private void ChannelOnModeRemove(char mode)
+        {
+            UpdateModeString();
+        }
+
         private void ChannelOnTopicChange(TopicMessage message)
         {
             Topic = message.Topic;
+        }
+
+        private void UpdateModeString()
+        {
+            Modes = string.Join(string.Empty, Channel.Modes.OrderBy(char.IsLower).ThenBy(x=>x));
         }
     }
 }

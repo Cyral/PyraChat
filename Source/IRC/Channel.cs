@@ -12,7 +12,7 @@ namespace Pyratron.PyraChat.IRC
         /// <summary>
         /// Channel name (with prefix).
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// List of channel modes.
@@ -80,27 +80,6 @@ namespace Pyratron.PyraChat.IRC
             Type = ChannelType.FromPrefix(name[0]);
         }
 
-        /// <summary>
-        /// Adds a user to the channel and fires the UserAdd event.
-        /// </summary>
-        public void AddUser(User user)
-        {
-            if (!user.Channels.Contains(this))
-            {
-                user.Channels.Add(this);
-                if (!Client.Users.Contains(user))
-                    Client.Users.Add(user);
-                OnUserAdd(user);
-            }
-        }
-
-        public void RemoveUser(User user)
-        {
-            user.Channels.Remove(this);
-            Client.Users.Remove(user);
-            OnUserRemove(user);
-        }
-
         public int AddMode(Client client, string channel, char mode, string parameter = "")
         {
             switch (mode)
@@ -138,17 +117,20 @@ namespace Pyratron.PyraChat.IRC
                 case 'b':
                 {
                     AddBan(parameter);
-                    return 1;
+                        OnModeAdd(mode);
+                        return 1;
                 }
                 case 'e':
                 {
                     AddException(parameter);
-                    return 1;
+                        OnModeAdd(mode);
+                        return 1;
                 }
                 case 'I':
                 {
                     AddInvite(parameter);
-                    return 1;
+                        OnModeAdd(mode);
+                        return 1;
                 }
                 case 'k':
                 {
@@ -163,7 +145,8 @@ namespace Pyratron.PyraChat.IRC
                     {
                         Userlimit = limit;
                         Modes.Add(mode);
-                        return 1;
+                            OnModeAdd(mode);
+                            return 1;
                     }
                     break;
                 }
@@ -174,33 +157,21 @@ namespace Pyratron.PyraChat.IRC
                     break;
                 }
             }
+            OnModeAdd(mode);
             return 0;
         }
 
-        internal void AddInvite(string mask)
+        /// <summary>
+        /// Adds a user to the channel and fires the UserAdd event.
+        /// </summary>
+        public void AddUser(User user)
         {
-            if (!InviteList.Contains(mask))
+            if (!user.Channels.Contains(this))
             {
-                InviteList.Add(mask);
-                OnInviteChange(mask, false);
-            }
-        }
-
-        internal void AddBan(string mask)
-        {
-            if (!BanList.Contains(mask))
-            {
-                BanList.Add(mask);
-                OnBanChange(mask, false);
-            }
-        }
-
-        internal void AddException(string mask)
-        {
-            if (!ExceptionList.Contains(mask))
-            {
-                ExceptionList.Add(mask);
-                OnExceptionChange(mask, false);
+                user.Channels.Add(this);
+                if (!Client.Users.Contains(user))
+                    Client.Users.Add(user);
+                OnUserAdd(user);
             }
         }
 
@@ -241,16 +212,19 @@ namespace Pyratron.PyraChat.IRC
                 case 'b':
                 {
                     RemoveBan(parameter);
+                    OnModeRemove(mode);
                     return 1;
                 }
                 case 'e':
                 {
                     RemoveException(parameter);
+                    OnModeRemove(mode);
                     return 1;
                 }
                 case 'I':
                 {
                     RemoveInvite(parameter);
+                    OnModeRemove(mode);
                     return 1;
                 }
                 case 'k':
@@ -261,6 +235,7 @@ namespace Pyratron.PyraChat.IRC
                         if (Modes.Contains(mode))
                             Modes.Remove(mode);
                     }
+                    OnModeRemove(mode);
                     return 1;
                 }
                 case 'l':
@@ -277,24 +252,46 @@ namespace Pyratron.PyraChat.IRC
                     break;
                 }
             }
+            OnModeRemove(mode);
             return 0;
         }
 
-        private void RemoveInvite(string mask)
+        public void RemoveUser(User user)
         {
-            if (InviteList.Contains(mask))
+            user.Channels.Remove(this);
+            Client.Users.Remove(user);
+            OnUserRemove(user);
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        internal void AddBan(string mask)
+        {
+            if (!BanList.Contains(mask))
             {
-                InviteList.Remove(mask);
-                OnInviteChange(mask, false);
+                BanList.Add(mask);
+                OnBanChange(mask, false);
             }
         }
 
-        private void RemoveException(string mask)
+        internal void AddException(string mask)
         {
-            if (ExceptionList.Contains(mask))
+            if (!ExceptionList.Contains(mask))
             {
-                ExceptionList.Remove(mask);
+                ExceptionList.Add(mask);
                 OnExceptionChange(mask, false);
+            }
+        }
+
+        internal void AddInvite(string mask)
+        {
+            if (!InviteList.Contains(mask))
+            {
+                InviteList.Add(mask);
+                OnInviteChange(mask, false);
             }
         }
 
@@ -307,9 +304,22 @@ namespace Pyratron.PyraChat.IRC
             }
         }
 
-        public override string ToString()
+        private void RemoveException(string mask)
         {
-            return Name;
+            if (ExceptionList.Contains(mask))
+            {
+                ExceptionList.Remove(mask);
+                OnExceptionChange(mask, false);
+            }
+        }
+
+        private void RemoveInvite(string mask)
+        {
+            if (InviteList.Contains(mask))
+            {
+                InviteList.Remove(mask);
+                OnInviteChange(mask, false);
+            }
         }
 
         #region Events
@@ -340,6 +350,12 @@ namespace Pyratron.PyraChat.IRC
 
         public delegate void KickEventHandler(KickMessage message);
 
+        public delegate void ChannelModeIsEventHandler(ChannelModeIsMessage message);
+
+        public delegate void ModeAddEventHandler(char mode);
+
+        public delegate void ModeRemoveEventHandler(char mode);
+
         public event NoticeEventHandler Notice;
         public event MessageEventHandler Message;
         public event UserJoinEventHandler UserJoin;
@@ -353,6 +369,9 @@ namespace Pyratron.PyraChat.IRC
         public event ExceptionChangeEventHandler ExceptionChange;
         public event InviteChangeEventHandler InviteChange;
         public event KickEventHandler Kick;
+        public event ModeAddEventHandler ModeAdd;
+        public event ModeRemoveEventHandler ModeRemove;
+        public event ChannelModeIsEventHandler ReplyChannelModeIs;
 
         internal void OnNotice(NoticeMessage message) => Notice?.Invoke(message);
         internal void OnMessage(PrivateMessage message) => Message?.Invoke(message);
@@ -360,6 +379,8 @@ namespace Pyratron.PyraChat.IRC
         internal void OnUserPart(PartMessage message) => UserPart?.Invoke(message);
         internal void OnUserAdd(User user) => UserAdd?.Invoke(user);
         internal void OnUserRemove(User user) => UserRemove?.Invoke(user);
+        internal void OnModeAdd(char mode) => ModeAdd?.Invoke(mode);
+        internal void OnModeRemove(char mode) => ModeRemove?.Invoke(mode);
         internal void OnTopicChange(TopicMessage message) => TopicChange?.Invoke(message);
         internal void OnTopicWhoTime(TopicWhoTimeMessage message) => TopicWhoTime?.Invoke(message);
         internal void OnChannelMode(ChannelModeMessage message) => ChannelMode?.Invoke(message);
@@ -367,6 +388,7 @@ namespace Pyratron.PyraChat.IRC
         internal void OnExceptionChange(string mask, bool isException) => ExceptionChange?.Invoke(mask, isException);
         internal void OnInviteChange(string mask, bool isInvited) => BanChange?.Invoke(mask, isInvited);
         internal void OnKick(KickMessage message) => Kick?.Invoke(message);
+        internal void OnReplyChannelModeIs(ChannelModeIsMessage message) => ReplyChannelModeIs?.Invoke(message);
 
         #endregion //Events
     }

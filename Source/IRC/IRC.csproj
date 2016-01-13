@@ -51,6 +51,7 @@
     <Compile Include="Messages\Receive\JoinMessage.cs" />
     <Compile Include="Messages\Receive\KickMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\AwayMessage.cs" />
+    <Compile Include="Messages\Receive\Numerics\ChannelModeIsMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\ExceptListMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\InivteListMessage.cs" />
     <Compile Include="Messages\Receive\Numerics\BanList.cs" />

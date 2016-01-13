@@ -85,7 +85,7 @@ namespace Pyratron.PyraChat.UI.ViewModels
             Networks.Add(new Network("frogbox.es", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
                 //"#aenet",
-                "#Pyratron",
+               // "#Pyratron",
                 "#Bricklayer",
                 "#pyratest",
             }));
@@ -94,11 +94,12 @@ namespace Pyratron.PyraChat.UI.ViewModels
             {
                 "#Codetree",
             }));
+             */
             Networks.Add(new Network("irc.quakenet.org", 6667, new User("PyraChat", "PyraChat", "pyra"), new[]
             {
                 "#pyratest",
             }));
-            */
+           
             Network = Networks[0];
         }
 
